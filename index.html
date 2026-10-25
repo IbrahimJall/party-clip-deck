@@ -64,7 +64,21 @@ li.on .n{color:var(--accent)}
 .r{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .editor{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--line)}
-textarea{width:100%;min-height:180px;resize:vertical;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 var(--mono)}
+.editor{overflow:auto;flex:1;border-top:0}
+.erow{display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.erow.bad{border-color:var(--bad)}
+.ehead{display:flex;justify-content:space-between;align-items:center}
+.ehead .num{font:600 12px var(--mono);color:var(--accent)}
+.del{background:none;border:0;color:var(--muted);font-size:13px;cursor:pointer;padding:2px 4px}
+.del:hover{color:var(--bad)}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.fld input{width:100%;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:14px var(--mono)}
+.fld input.bad{border-color:var(--bad)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ferr{font-size:12px;color:var(--bad)}
+.addBtn{border-style:dashed !important;width:100%}
+.efoot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .msg{font-size:12px;color:var(--muted)}
 .msg.bad{color:var(--bad)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
@@ -107,16 +121,17 @@ textarea{width:100%;min-height:180px;resize:vertical;background:var(--bg);color:
   </section>
 
   <aside>
-    <div class="aside-head"><h3>Clips</h3><button class="ctl" id="editBtn" type="button">Edit list</button></div>
+    <div class="aside-head"><h3>Clips</h3><button class="ctl" id="editBtn" type="button">Edit clips</button></div>
     <ol class="cues" id="cues"></ol>
     <div class="editor" id="editor" hidden>
-      <div class="msg">One clip per line: <b>link start end</b>, then an optional title. Times can be 1:23, 1:02:03 or 83.</div>
-      <textarea id="listInput" spellcheck="false"></textarea>
-      <div class="controls">
-        <button class="ctl" id="saveBtn" type="button">Save list</button>
-        <button class="ctl" id="cancelBtn" type="button">Cancel</button>
-      </div>
-      <div class="msg" id="parseMsg"></div>
+      <div class="msg">Times look like <b>1:23</b> or <b>1:02:03</b>. Leave End empty to play to the end of the video.</div>
+      <div id="rows" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="ctl addBtn" id="addBtn" type="button">+ Add clip</button>
+    </div>
+    <div class="efoot" id="efoot" hidden>
+      <button class="ctl" id="saveBtn" type="button" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Save clips</button>
+      <button class="ctl" id="cancelBtn" type="button">Cancel</button>
+      <span class="msg bad" id="parseMsg"></span>
     </div>
   </aside>
 </div>
@@ -126,7 +141,7 @@ textarea{width:100%;min-height:180px;resize:vertical;background:var(--bg);color:
 /* ===== Your clips go here. One per line: link  start  end  optional title =====
    Lines starting with # are ignored. Leave end blank (or "end") to play to the end of the video. */
 const DEFAULT_LIST = `
-# Example clips. Replace these with yours (or use "Edit list" on the page).
+# Example clips. Replace these with yours (or use "Edit clips" on the page).
 https://www.youtube.com/watch?v=dQw4w9WgXcQ   0:43  1:05   Example clip one
 https://youtu.be/dQw4w9WgXcQ                  1:25  1:40   Example clip two
 `;
@@ -221,7 +236,7 @@ window.onYouTubeIframeAPIReady = function(){
     width:"100%", height:"100%",
     playerVars:{ playsinline:1, rel:0, modestbranding:1, origin: location.origin },
     events:{
-      onReady: () => { ready = true; $("ovSub").textContent = clips.length ? `${clips.length} clip${clips.length>1?"s":""} queued.` : "Add clips with “Edit list”."; $("startBtn").disabled = !clips.length; },
+      onReady: () => { ready = true; $("ovSub").textContent = clips.length ? `${clips.length} clip${clips.length>1?"s":""} queued.` : "Add clips with “Edit clips”."; $("startBtn").disabled = !clips.length; },
       onStateChange: e => {
         if(e.data === YT.PlayerState.ENDED) next(true);
         if(e.data === YT.PlayerState.PLAYING){
@@ -332,21 +347,69 @@ document.addEventListener("keydown", e => {
   else if(k === "f"){ toggleFs(); }
 });
 
-/* ---------- editor ---------- */
-$("editBtn").onclick = () => { $("listInput").value = listText; $("parseMsg").textContent = ""; $("editor").hidden = false; $("listInput").focus(); };
-$("cancelBtn").onclick = () => { $("editor").hidden = true; };
+/* ---------- editor: one card per clip, separate Link / Start / End fields ---------- */
+function rowEl(c){
+  const d = document.createElement("div"); d.className = "erow"; d.dataset.title = c.title || "";
+  d.innerHTML = `<div class="ehead"><span class="num"></span><button class="del" type="button">Remove</button></div>
+    <label class="fld"><span>YouTube link</span><input class="f-link" type="url" inputmode="url" placeholder="https://youtu.be/…" autocomplete="off" spellcheck="false"></label>
+    <div class="two">
+      <label class="fld"><span>Start</span><input class="f-start" inputmode="numeric" placeholder="0:00" autocomplete="off"></label>
+      <label class="fld"><span>End</span><input class="f-end" inputmode="numeric" placeholder="end of video" autocomplete="off"></label>
+    </div><div class="ferr"></div>`;
+  d.querySelector(".f-link").value = c.link || "";
+  d.querySelector(".f-start").value = c.startText || "";
+  d.querySelector(".f-end").value = c.endText || "";
+  d.querySelector(".del").onclick = () => { d.remove(); numberRows(); };
+  // If a pasted link already contains a start time (?t=90), fill Start for them.
+  d.querySelector(".f-link").addEventListener("input", e => {
+    const s = d.querySelector(".f-start"); const t = urlStart(e.target.value);
+    if(!s.value && t) s.value = fmt(t);
+  });
+  return d;
+}
+function numberRows(){ [...$("rows").children].forEach((r,i) => r.querySelector(".num").textContent = "Clip " + (i+1)); }
+function openEditor(){
+  const rows = $("rows"); rows.innerHTML = "";
+  const src = clips.length ? clips : [{}];
+  src.forEach(c => rows.appendChild(rowEl(c.id ? { link:"https://youtu.be/" + c.id, startText: fmt(c.start), endText: c.end != null ? fmt(c.end) : "", title:c.title } : {})));
+  numberRows(); $("parseMsg").textContent = "";
+  $("cues").hidden = true; $("editor").hidden = false; $("efoot").hidden = false;
+}
+function closeEditor(){ $("cues").hidden = false; $("editor").hidden = true; $("efoot").hidden = true; }
+function readRows(){
+  const out = [], bad = [];
+  [...$("rows").children].forEach((r, i) => {
+    const L = r.querySelector(".f-link"), S = r.querySelector(".f-start"), E = r.querySelector(".f-end"), err = r.querySelector(".ferr");
+    [L,S,E].forEach(x => x.classList.remove("bad")); r.classList.remove("bad"); err.textContent = "";
+    const link = L.value.trim(), st = S.value.trim(), en = E.value.trim();
+    if(!link && !st && !en) return;                       // fully empty card: ignore
+    const msgs = [];
+    const id = videoIdFrom(link); if(!id){ L.classList.add("bad"); msgs.push("Paste a YouTube link"); }
+    let start = st ? parseTime(st) : (urlStart(link) || 0);
+    if(Number.isNaN(start)){ S.classList.add("bad"); msgs.push("Start should look like 1:23"); }
+    let end = en ? parseTime(en) : null;
+    if(Number.isNaN(end)){ E.classList.add("bad"); msgs.push("End should look like 2:05"); }
+    else if(end != null && !Number.isNaN(start) && end <= start){ E.classList.add("bad"); msgs.push("End must be after Start"); }
+    if(msgs.length){ r.classList.add("bad"); err.textContent = msgs.join(" · "); bad.push(i+1); return; }
+    out.push({ id, start, end, title: r.dataset.title || "", err:false });
+  });
+  return { out, bad };
+}
+function serialize(list){ return list.map(c => `https://youtu.be/${c.id} ${fmt(c.start)} ${c.end != null ? fmt(c.end) : "end"}${c.title ? " " + c.title : ""}`).join("\n"); }
+
+$("editBtn").onclick = () => { if($("editor").hidden) openEditor(); else closeEditor(); };
+$("addBtn").onclick = () => { const r = rowEl({}); $("rows").appendChild(r); numberRows(); r.scrollIntoView({block:"nearest"}); r.querySelector(".f-link").focus(); };
+$("cancelBtn").onclick = closeEditor;
 $("saveBtn").onclick = () => {
-  const text = $("listInput").value;
-  const {clips: parsed, errors} = parseList(text);
-  const msg = $("parseMsg");
-  if(errors.length){ msg.className = "msg bad"; msg.textContent = errors.join(" · "); return; }
-  if(!parsed.length){ msg.className = "msg bad"; msg.textContent = "No clips found. Put one link per line."; return; }
-  listText = text; clips = parsed; idx = -1; started = false;
+  const { out, bad } = readRows();
+  if(bad.length){ $("parseMsg").textContent = `Check clip ${bad.join(", ")}`; return; }
+  if(!out.length){ $("parseMsg").textContent = "Add at least one clip"; return; }
+  clips = out; listText = serialize(out); idx = -1; started = false;
   try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
   if(player && player.stopVideo) player.stopVideo(); stopPoll();
   $("overlay").hidden = false; $("ovTitle").textContent = "Ready when you are"; $("startBtn").textContent = "Start the show";
   $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`; $("startBtn").disabled = !ready;
-  $("editor").hidden = true; renderList(); updateNow(); toast("List saved");
+  closeEditor(); renderList(); updateNow(); toast("Clips saved");
 };
 
 renderList(); updateNow();
