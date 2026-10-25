@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Party Clip Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: big stage on the left, cue list on the right; stacks on narrow screens. Deliberately dark (a party screen). */
+:root{
+  --bg:#0f0d14; --panel:#18151f; --line:#2a2533; --fg:#efeaf5; --muted:#9b93a8;
+  --accent:#ffb020; --accent-ink:#1a1206; --bad:#ff5d6c; --ok:#5fd39a;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+header{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,34px);margin:0;letter-spacing:-.01em}
+h1 span{color:var(--accent)}
+.hint{color:var(--muted);font-size:13px}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--fg)}
+
+.stage{min-width:0;display:flex;flex-direction:column;gap:12px}
+.screen{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:#000;border-radius:10px;overflow:hidden}
+.screen iframe,#player{position:absolute;inset:0;width:100%;height:100%;border:0}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(circle at 50% 40%,#2b1f3a,#0b0910 70%);text-align:center;padding:20px}
+.overlay h2{font-family:var(--display);font-size:clamp(22px,4vw,44px);margin:0;font-weight:800}
+.overlay p{margin:0;color:var(--muted)}
+.big{font-family:var(--display);font-weight:800;font-size:20px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 34px;cursor:pointer}
+.big:hover{filter:brightness(1.08)}
+
+.nowbar{display:flex;flex-direction:column;gap:6px}
+.nowtitle{font-family:var(--display);font-weight:500;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+.times{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button.ctl{font:600 14px var(--display);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:9px 14px;cursor:pointer}
+button.ctl:hover{border-color:var(--accent)}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.tog{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer}
+.spacer{flex:1}
+
+aside{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;max-height:calc(100vh - 110px);min-height:300px}
+.aside-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.aside-head h3{margin:0;font:800 15px var(--display);text-transform:uppercase;letter-spacing:.08em}
+ol.cues{list-style:none;margin:0;padding:6px;overflow:auto;flex:1}
+ol.cues li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:9px 8px;border-radius:7px;cursor:pointer;align-items:start}
+ol.cues li:hover{background:#221e2b}
+ol.cues li.on{background:#2c2312;outline:1px solid var(--accent)}
+ol.cues li.err .t{color:var(--bad)}
+.n{font-family:var(--mono);color:var(--muted);font-size:12px;padding-top:2px;text-align:right}
+li.on .n{color:var(--accent)}
+.t{font-size:14px;overflow-wrap:anywhere}
+.r{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.editor{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--line)}
+textarea{width:100%;min-height:180px;resize:vertical;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 var(--mono)}
+.msg{font-size:12px;color:var(--muted)}
+.msg.bad{color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.progress i,.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Party Clip <span>Deck</span></h1>
+    <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen</div>
+  </header>
+
+  <section class="stage">
+    <div class="screen" id="screen">
+      <div id="player"></div>
+      <div class="overlay" id="overlay">
+        <h2 id="ovTitle">Ready when you are</h2>
+        <p id="ovSub">Loading the YouTube player…</p>
+        <button class="big" id="startBtn" type="button" disabled>Start the show</button>
+      </div>
+    </div>
+
+    <div class="nowbar">
+      <div class="nowtitle" id="nowTitle">Nothing playing</div>
+      <div class="progress"><i id="bar"></i></div>
+      <div class="times"><span id="tNow">0:00</span><span id="tClip">Clip 0 of 0</span><span id="tLeft">-0:00</span></div>
+    </div>
+
+    <div class="controls">
+      <button class="ctl" id="prevBtn" type="button">◀ Previous</button>
+      <button class="ctl" id="playBtn" type="button">Play / Pause</button>
+      <button class="ctl" id="nextBtn" type="button">Next ▶</button>
+      <button class="ctl" id="fsBtn" type="button">Fullscreen</button>
+      <span class="spacer"></span>
+      <label class="tog"><input type="checkbox" id="fadeChk" checked> Fade in/out</label>
+      <label class="tog"><input type="checkbox" id="loopChk"> Loop the list</label>
+    </div>
+  </section>
+
+  <aside>
+    <div class="aside-head"><h3>Clips</h3><button class="ctl" id="editBtn" type="button">Edit list</button></div>
+    <ol class="cues" id="cues"></ol>
+    <div class="editor" id="editor" hidden>
+      <div class="msg">One clip per line: <b>link start end</b>, then an optional title. Times can be 1:23, 1:02:03 or 83.</div>
+      <textarea id="listInput" spellcheck="false"></textarea>
+      <div class="controls">
+        <button class="ctl" id="saveBtn" type="button">Save list</button>
+        <button class="ctl" id="cancelBtn" type="button">Cancel</button>
+      </div>
+      <div class="msg" id="parseMsg"></div>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Your clips go here. One per line: link  start  end  optional title =====
+   Lines starting with # are ignored. Leave end blank (or "end") to play to the end of the video. */
+const DEFAULT_LIST = `
+# Example clips. Replace these with yours (or use "Edit list" on the page).
+https://www.youtube.com/watch?v=dQw4w9WgXcQ   0:43  1:05   Example clip one
+https://youtu.be/dQw4w9WgXcQ                  1:25  1:40   Example clip two
+`;
+</script>
+<script>
+"use strict";
+const STORE_KEY = "partyClipDeck.list.v1";
+const $ = id => document.getElementById(id);
+
+/* ---------- parsing ---------- */
+function parseTime(s){
+  if(s == null) return null;
+  s = String(s).trim().toLowerCase();
+  if(!s || s === "end" || s === "-") return null;
+  if(/^\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+(?:\.\d+)?)s)?$/);
+  if(m && (m[1]||m[2]||m[3])) return (+m[1]||0)*3600 + (+m[2]||0)*60 + (parseFloat(m[3])||0);
+  const parts = s.split(":");
+  if(parts.length >= 2 && parts.length <= 3 && parts.every(p => /^\d+(\.\d+)?$/.test(p))){
+    return parts.reduce((acc,p) => acc*60 + parseFloat(p), 0);
+  }
+  return NaN;
+}
+function videoIdFrom(url){
+  const s = url.trim();
+  if(/^[\w-]{11}$/.test(s)) return s;
+  let u; try{ u = new URL(s.startsWith("http") ? s : "https://" + s); }catch(e){ return null; }
+  const host = u.hostname.replace(/^www\.|^m\.|^music\./, "");
+  if(host === "youtu.be") return (u.pathname.split("/")[1]||"").slice(0,11) || null;
+  if(host.endsWith("youtube.com") || host.endsWith("youtube-nocookie.com")){
+    const v = u.searchParams.get("v"); if(v) return v.slice(0,11);
+    const m = u.pathname.match(/\/(?:embed|shorts|live|v)\/([\w-]{11})/); if(m) return m[1];
+  }
+  return null;
+}
+function urlStart(url){
+  try{ const u = new URL(url.startsWith("http") ? url : "https://" + url);
+    const t = u.searchParams.get("t") || u.searchParams.get("start"); return t ? parseTime(t) : null; }catch(e){ return null; }
+}
+function parseList(text){
+  const clips = [], errors = [];
+  text.split(/\r?\n/).forEach((raw, i) => {
+    const line = raw.trim();
+    if(!line || line.startsWith("#")) return;
+    const tok = line.split(/\s+/);
+    const id = videoIdFrom(tok[0]);
+    if(!id){ errors.push(`Line ${i+1}: couldn't read a YouTube link`); return; }
+    let start = tok[1] !== undefined ? parseTime(tok[1]) : null;
+    let end = tok[2] !== undefined ? parseTime(tok[2]) : null;
+    let titleFrom = 3;
+    // allow "link start" with a title but no end: if tok[2] isn't a time, treat it as title
+    if(tok[2] !== undefined && Number.isNaN(end)){ end = null; titleFrom = 2; }
+    if(tok[1] !== undefined && Number.isNaN(start)){ start = null; titleFrom = 1; end = null; }
+    if(start == null) start = urlStart(tok[0]) || 0;
+    if(end != null && end <= start){ errors.push(`Line ${i+1}: end time is before the start time`); return; }
+    const title = tok.slice(titleFrom).join(" ") || "";
+    clips.push({id, start, end, title, err:false});
+  });
+  return {clips, errors};
+}
+function fmt(sec){
+  if(sec == null || !isFinite(sec)) return "end";
+  sec = Math.max(0, Math.round(sec));
+  const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  return (h ? h + ":" + String(m).padStart(2,"0") : m) + ":" + String(s).padStart(2,"0");
+}
+
+/* ---------- state ---------- */
+let listText = DEFAULT_LIST.trim();
+try{ const saved = localStorage.getItem(STORE_KEY); if(saved) listText = saved; }catch(e){}
+let clips = parseList(listText).clips;
+let idx = -1, player = null, ready = false, started = false, armed = false, poll = null, volume = 100;
+
+/* ---------- UI ---------- */
+function renderList(){
+  const ol = $("cues"); ol.innerHTML = "";
+  clips.forEach((c, i) => {
+    const li = document.createElement("li");
+    li.className = (i === idx ? "on " : "") + (c.err ? "err" : "");
+    li.innerHTML = `<span class="n">${String(i+1).padStart(2,"0")}</span><div><div class="t"></div><div class="r">${fmt(c.start)} → ${fmt(c.end)}${c.err ? " · can't play here, skipped" : ""}</div></div>`;
+    li.querySelector(".t").textContent = c.title || c.realTitle || ("YouTube " + c.id);
+    li.addEventListener("click", () => { if(!started) begin(i); else play(i); });
+    ol.appendChild(li);
+  });
+  $("tClip").textContent = `Clip ${idx+1 > 0 ? idx+1 : 0} of ${clips.length}`;
+}
+function toast(t){ const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2200); }
+
+/* ---------- player ---------- */
+window.onYouTubeIframeAPIReady = function(){
+  player = new YT.Player("player", {
+    width:"100%", height:"100%",
+    playerVars:{ playsinline:1, rel:0, modestbranding:1, origin: location.origin },
+    events:{
+      onReady: () => { ready = true; $("ovSub").textContent = clips.length ? `${clips.length} clip${clips.length>1?"s":""} queued.` : "Add clips with “Edit list”."; $("startBtn").disabled = !clips.length; },
+      onStateChange: e => {
+        if(e.data === YT.PlayerState.ENDED) next(true);
+        if(e.data === YT.PlayerState.PLAYING){
+          armed = true;
+          const c = clips[idx]; const d = player.getVideoData && player.getVideoData();
+          if(c && d && d.title && !c.title && c.realTitle !== d.title){ c.realTitle = d.title; renderList(); }
+          updateNow();
+        }
+      },
+      onError: e => {
+        const c = clips[idx]; if(!c) return;
+        c.err = true; renderList(); armed = true;
+        const why = (e.data === 101 || e.data === 150) ? "the owner doesn't allow it to play on other sites" : (e.data === 100 ? "the video is private or removed" : "YouTube error " + e.data);
+        toast(`Skipping clip ${idx+1}: ${why}`);
+        setTimeout(() => next(true), 1500);
+      }
+    }
+  });
+};
+if(location.protocol === "file:"){
+  $("ovTitle").textContent = "Open this page from a web address";
+  $("ovSub").textContent = "YouTube blocks videos on pages opened as a local file (Error 153). Serve it from your website or a local server, then reload.";
+}
+
+function begin(i){
+  if(!ready || !clips.length) return;
+  started = true; $("overlay").hidden = true; play(i || 0);
+}
+function play(i){
+  if(!ready || i < 0 || i >= clips.length) return;
+  idx = i; armed = false;
+  const c = clips[i];
+  const opts = { videoId:c.id, startSeconds:c.start };
+  if(c.end != null) opts.endSeconds = c.end;
+  volume = $("fadeChk").checked ? 0 : 100;
+  player.setVolume(volume); player.unMute();
+  player.loadVideoById(opts);
+  renderList(); updateNow();
+  const li = $("cues").children[i]; if(li) li.scrollIntoView({block:"nearest"});
+  startPoll();
+}
+function next(auto){
+  // Auto-advance only once per clip, and only after the current clip has actually started playing.
+  if(auto && !armed) return; armed = false;
+  let n = idx + 1;
+  while(n < clips.length && clips[n].err) n++;
+  if(n >= clips.length){
+    if($("loopChk").checked && clips.some(c => !c.err)){ n = clips.findIndex(c => !c.err); }
+    else { stopPoll(); player.stopVideo(); showEnd(); return; }
+  }
+  play(n);
+}
+function prev(){ let p = idx - 1; while(p >= 0 && clips[p].err) p--; play(Math.max(0, p)); }
+function showEnd(){ started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all the clips"; $("ovSub").textContent = "Press the button to run the list again."; $("startBtn").textContent = "Play again"; updateNow(); }
+
+function startPoll(){ stopPoll(); poll = setInterval(tick, 200); }
+function stopPoll(){ clearInterval(poll); poll = null; }
+function tick(){
+  const c = clips[idx]; if(!c || !player || !player.getCurrentTime) return;
+  const t = player.getCurrentTime(), st = player.getPlayerState();
+  const end = c.end != null ? c.end : (player.getDuration() || 0);
+  const len = Math.max(0.1, end - c.start);
+  $("bar").style.width = Math.min(100, Math.max(0, (t - c.start) / len * 100)) + "%";
+  $("tNow").textContent = fmt(Math.max(0, t - c.start));
+  $("tLeft").textContent = "-" + fmt(Math.max(0, end - t));
+  if(st === YT.PlayerState.PLAYING && $("fadeChk").checked){
+    const FADE = 1.5, intoClip = t - c.start, left = end - t;
+    let target = 100;
+    if(intoClip < FADE) target = Math.min(target, intoClip / FADE * 100);
+    if(end && left < FADE) target = Math.min(target, left / FADE * 100);
+    target = Math.max(0, Math.round(target));
+    if(Math.abs(target - volume) >= 2 || target === 100 || target === 0){ volume = target; player.setVolume(volume); }
+  }
+  // Backstop: YouTube sometimes keeps playing past endSeconds after a seek.
+  if(c.end != null && t >= c.end - 0.05 && (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING)) next(true);
+}
+function updateNow(){
+  const c = clips[idx];
+  $("nowTitle").textContent = c ? (c.title || c.realTitle || ("YouTube " + c.id)) : "Nothing playing";
+  $("tClip").textContent = `Clip ${idx >= 0 ? idx+1 : 0} of ${clips.length}`;
+  if(!c){ $("bar").style.width = "0"; $("tNow").textContent = "0:00"; $("tLeft").textContent = "-0:00"; }
+}
+
+/* ---------- controls ---------- */
+$("startBtn").onclick = () => begin(0);
+$("nextBtn").onclick = () => { if(!started) begin(0); else next(false); };
+$("prevBtn").onclick = () => { if(!started) begin(0); else prev(); };
+$("playBtn").onclick = togglePlay;
+function togglePlay(){
+  if(!started){ begin(0); return; }
+  const st = player.getPlayerState();
+  if(st === YT.PlayerState.PLAYING) player.pauseVideo(); else player.playVideo();
+}
+$("fsBtn").onclick = toggleFs;
+function toggleFs(){
+  const el = $("screen");
+  try{
+    if(document.fullscreenElement) document.exitFullscreen();
+    else { const r = (el.requestFullscreen || el.webkitRequestFullscreen).call(el); if(r && r.catch) r.catch(() => toast("Fullscreen isn't available here")); }
+  }catch(e){ toast("Fullscreen isn't available here"); }
+}
+document.addEventListener("keydown", e => {
+  if(e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") return;
+  const k = e.key.toLowerCase();
+  if(k === " "){ e.preventDefault(); togglePlay(); }
+  else if(k === "n"){ $("nextBtn").click(); }
+  else if(k === "p"){ $("prevBtn").click(); }
+  else if(k === "f"){ toggleFs(); }
+});
+
+/* ---------- editor ---------- */
+$("editBtn").onclick = () => { $("listInput").value = listText; $("parseMsg").textContent = ""; $("editor").hidden = false; $("listInput").focus(); };
+$("cancelBtn").onclick = () => { $("editor").hidden = true; };
+$("saveBtn").onclick = () => {
+  const text = $("listInput").value;
+  const {clips: parsed, errors} = parseList(text);
+  const msg = $("parseMsg");
+  if(errors.length){ msg.className = "msg bad"; msg.textContent = errors.join(" · "); return; }
+  if(!parsed.length){ msg.className = "msg bad"; msg.textContent = "No clips found. Put one link per line."; return; }
+  listText = text; clips = parsed; idx = -1; started = false;
+  try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
+  if(player && player.stopVideo) player.stopVideo(); stopPoll();
+  $("overlay").hidden = false; $("ovTitle").textContent = "Ready when you are"; $("startBtn").textContent = "Start the show";
+  $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`; $("startBtn").disabled = !ready;
+  $("editor").hidden = true; renderList(); updateNow(); toast("List saved");
+};
+
+renderList(); updateNow();
+</script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
