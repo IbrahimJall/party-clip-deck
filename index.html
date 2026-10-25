@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0nJR3JQxbCmh+TIIsLWDyjBCyQrMgb+Oh5+uJHigRW0=' 'sha256-93F55bd9My+LrLr7OOX4AEV9PbeKrAXGMoQ8tan/1+I=' https://www.youtube.com https://s.ytimg.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'none'; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bashayers Halloween Party Mixer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -209,10 +211,12 @@ function videoIdFrom(url){
   const s = url.trim();
   if(/^[\w-]{11}$/.test(s)) return s;
   let u; try{ u = new URL(s.startsWith("http") ? s : "https://" + s); }catch(e){ return null; }
+  if(!/^https?:$/.test(u.protocol)) return null;
   const host = u.hostname.replace(/^www\.|^m\.|^music\./, "");
-  if(host === "youtu.be") return (u.pathname.split("/")[1]||"").slice(0,11) || null;
-  if(host.endsWith("youtube.com") || host.endsWith("youtube-nocookie.com")){
-    const v = u.searchParams.get("v"); if(v) return v.slice(0,11);
+  const ok = x => /^[\w-]{11}$/.test(x||"") ? x : null;   // YouTube IDs are exactly 11 of A-Z a-z 0-9 _ -
+  if(host === "youtu.be") return ok((u.pathname.split("/")[1]||"").slice(0,11));
+  if(host === "youtube.com" || host.endsWith(".youtube.com") || host === "youtube-nocookie.com" || host.endsWith(".youtube-nocookie.com")){
+    const v = u.searchParams.get("v"); if(v) return ok(v.slice(0,11));
     const m = u.pathname.match(/\/(?:embed|shorts|live|v)\/([\w-]{11})/); if(m) return m[1];
   }
   return null;
