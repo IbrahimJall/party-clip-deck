@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bashayers Halloween Party Mixer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: big stage on the left, cue list on the right; stacks on narrow screens. Deliberately dark (a party screen). */
 :root{
@@ -13,6 +13,7 @@
   --bg:#f9a8d4; --panel:#fcd3e8; --field:#fff0f7; --line:#e77fb5; --fg:#2b0a1d; --muted:#7a2e57;
   --accent:#ff7a00; --accent-deep:#b33f00; --accent-ink:#2b0a00; --hover:#fbbfdd; --sel:#ffd9b8;
   --bad:#c0123c; --ok:#0f7a4a;
+  --spooky:"Creepster","Chalkduster",fantasy;
   --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   color-scheme:light;
@@ -20,34 +21,44 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,sans-serif;
+body{background:radial-gradient(ellipse at 50% -10%,#ffd1e8 0,transparent 60%),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22220%22%20height%3D%22160%22%3E%3Cg%20fill%3D%22%23f48cc2%22%3E%3Cpath%20transform%3D%22translate%2820%2022%29%20scale%28.55%29%22%20d%3D%22M32%209c1.5-3%203-5%203-5l1.2%204.6c2.6-.8%205.2-.6%207.8.8C48%205.2%2055%203%2064%204.5c-5.6%202-9%206-10%2012.5-3-2.2-6.4-2.2-9%20.8-2.2-2.4-5.4-2.6-8%200-1.6-2.2-3.4-3-5-3s-3.4.8-5%203c-2.6-2.6-5.8-2.4-8%200-2.6-3-6-3-9-.8C9%2011%205.6%206.5%200%204.5%209%203%2016%205.2%2020%209.4c2.6-1.4%205.2-1.6%207.8-.8L29%204s1.5%202%203%205z%22/%3E%3Cpath%20transform%3D%22translate%28140%20100%29%20scale%28.4%29%20rotate%28-12%29%22%20d%3D%22M32%209c1.5-3%203-5%203-5l1.2%204.6c2.6-.8%205.2-.6%207.8.8C48%205.2%2055%203%2064%204.5c-5.6%202-9%206-10%2012.5-3-2.2-6.4-2.2-9%20.8-2.2-2.4-5.4-2.6-8%200-1.6-2.2-3.4-3-5-3s-3.4.8-5%203c-2.6-2.6-5.8-2.4-8%200-2.6-3-6-3-9-.8C9%2011%205.6%206.5%200%204.5%209%203%2016%205.2%2020%209.4c2.6-1.4%205.2-1.6%207.8-.8L29%204s1.5%202%203%205z%22/%3E%3C/g%3E%3Cg%20fill%3D%22%23fff0f7%22%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2230%22%20r%3D%221.6%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%22120%22%20r%3D%221.2%22/%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2262%22%20r%3D%221.4%22/%3E%3C/g%3E%3C/svg%3E") 0 0/220px 160px,var(--bg);color:var(--fg);overflow-x:hidden;font:15px/1.5 system-ui,-apple-system,sans-serif;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
-.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px}
+.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px}
 @media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
 header{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,3vw,34px);margin:0;letter-spacing:-.01em}
-h1 span{color:var(--accent-deep)}
-.hint{color:var(--muted);font-size:13px}
+h1{font-family:var(--spooky);font-weight:400;font-size:clamp(30px,4.6vw,58px);line-height:1;margin:0;letter-spacing:.02em;color:#2b0a1d;text-shadow:3px 3px 0 #fff3f9;display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-wrap:balance}
+h1 .pk{text-shadow:none;width:clamp(38px,5vw,60px);flex:none;animation:wobble 2.6s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+h1 span{color:var(--accent);text-shadow:3px 3px 0 #2b0a1d}
+.hint{color:var(--muted);font-size:13px;padding-right:44px}
 kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--fg)}
 
 .stage{min-width:0;display:flex;flex-direction:column;gap:12px}
 .screen{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:#000;border-radius:10px;overflow:hidden}
 .screen iframe,#player{position:absolute;inset:0;width:100%;height:100%;border:0}
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(circle at 50% 40%,#4a1638,#120510 70%);color:#fff3f9;text-align:center;padding:20px}
-.overlay h2{font-family:var(--display);font-size:clamp(22px,4vw,44px);margin:0;font-weight:800}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(circle at 78% 22%,#fff3c4 0 7%,#ffd56a 8%,rgba(255,213,106,.25) 13%,transparent 24%),radial-gradient(circle at 50% 120%,#7a1f55,#2a0820 55%,#0f030c 100%);color:#fff3f9;text-align:center;padding:20px}
+.overlay h2{font-family:var(--spooky);font-weight:400;font-size:clamp(30px,6vw,72px);margin:0;letter-spacing:.03em;color:#ff7a00;text-shadow:0 0 18px rgba(255,122,0,.55)}
+.overlay .ghosts{display:flex;gap:18px}
+.overlay .ghosts span{width:clamp(30px,5vw,56px);animation:bob 2.4s ease-in-out infinite}
+.overlay .ghosts span:nth-child(2){animation-delay:-.8s}.overlay .ghosts span:nth-child(3){animation-delay:-1.6s}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
 .overlay p{margin:0;color:#f3b6d4}
-.big{font-family:var(--display);font-weight:800;font-size:20px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 34px;cursor:pointer}
-.big:hover{filter:brightness(1.08)}
+.big{font-family:var(--spooky);font-weight:400;letter-spacing:.04em;font-size:clamp(20px,2.6vw,28px);box-shadow:0 0 0 4px #2b0a1d,0 0 26px rgba(255,122,0,.7);background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 34px;cursor:pointer}
+.big:hover{filter:brightness(1.08);transform:scale(1.04) rotate(-1deg)}
+.big:disabled{opacity:.6;cursor:wait}
 
 .nowbar{display:flex;flex-direction:column;gap:6px}
-.nowtitle{font-family:var(--display);font-weight:500;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+.nowtitle{font-family:var(--display);font-weight:800;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progress{height:12px;background:#fff0f7;border:2px solid #2b0a1d;border-radius:8px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:repeating-linear-gradient(-45deg,#ffd23f 0 8px,#ff7a00 8px 16px,#fff7fb 16px 24px);background-size:34px 34px;animation:candy 1s linear infinite;transition:width .25s linear}
+@keyframes candy{to{background-position:34px 0}}
 .times{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 button.ctl{font:600 14px var(--display);background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent-deep);border-radius:8px;padding:9px 14px;cursor:pointer}
-button.ctl:hover{filter:brightness(1.08)}
+button.ctl{box-shadow:0 3px 0 #2b0a1d;transition:transform .12s}
+button.ctl:hover{filter:brightness(1.08);transform:translateY(-1px) rotate(-1.5deg)}
+button.ctl:active{transform:translateY(2px);box-shadow:0 1px 0 #2b0a1d}
 input[type=checkbox]{accent-color:var(--accent)}
 button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 label.tog{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer}
@@ -55,14 +66,15 @@ label.tog{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:1
 
 aside{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;max-height:calc(100vh - 110px);min-height:300px}
 .aside-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
-.aside-head h3{margin:0;font:800 15px var(--display);text-transform:uppercase;letter-spacing:.08em}
+.aside-head h3{margin:0;font:400 24px var(--spooky);letter-spacing:.04em;color:#2b0a1d}
+aside{position:relative}
 ol.cues{list-style:none;margin:0;padding:6px;overflow:auto;flex:1}
 ol.cues li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:9px 8px;border-radius:7px;cursor:pointer;align-items:start}
 ol.cues li:hover{background:var(--hover)}
 ol.cues li.on{background:var(--sel);outline:2px solid var(--accent)}
 ol.cues li.err .t{color:var(--bad)}
 .n{font-family:var(--mono);color:var(--muted);font-size:12px;padding-top:2px;text-align:right}
-li.on .n{color:var(--accent-deep)}
+li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2048%2044%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M22%208c0-4%202-7%206-8l1.5%202.2C27%203.4%2025.6%205.6%2025.6%208z%22%20fill%3D%22%233f7d20%22/%3E%3Cellipse%20cx%3D%2214%22%20cy%3D%2226%22%20rx%3D%2212%22%20ry%3D%2216%22%20fill%3D%22%23e8650a%22/%3E%3Cellipse%20cx%3D%2234%22%20cy%3D%2226%22%20rx%3D%2212%22%20ry%3D%2216%22%20fill%3D%22%23e8650a%22/%3E%3Cellipse%20cx%3D%2224%22%20cy%3D%2226%22%20rx%3D%2212%22%20ry%3D%2217%22%20fill%3D%22%23ff7a00%22/%3E%3Cpath%20d%3D%22M12%2021l6-6%203%207zM36%2021l-6-6-3%207z%22%20fill%3D%22%232b0a1d%22/%3E%3Cpath%20d%3D%22M11%2030q13%2010%2026%200l-3%206-3-3-3%204-4-4-3%204-3-4-3%203z%22%20fill%3D%22%232b0a1d%22/%3E%3C/svg%3E") center/20px no-repeat}
 .t{font-size:14px;overflow-wrap:anywhere}
 .r{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
@@ -90,13 +102,32 @@ li.on .n{color:var(--accent-deep)}
 .msg.bad{color:var(--bad)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1}
-@media (prefers-reduced-motion:reduce){.progress i,.toast{transition:none}}
+/* ---- Halloween decorations (purely visual, never block clicks) ---- */
+.deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.deco .web{position:absolute;width:clamp(110px,14vw,190px);opacity:.9}
+.deco .web.l{left:0;top:0;transform:scaleX(-1) rotate(90deg)}
+.deco .web.r{right:0;top:0;transform:rotate(90deg) scaleY(-1)}
+.deco .bat{position:absolute;left:-90px;width:64px;color:#2b0a1d;animation:fly linear infinite}
+.deco .bat svg{animation:flap .28s ease-in-out infinite alternate;transform-origin:50% 40%}
+@keyframes flap{to{transform:scaleY(.35)}}
+@keyframes fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-30px)}50%{transform:translate(56vw,25px)}75%{transform:translate(84vw,-20px)}100%{transform:translate(calc(100vw + 180px),10px)}}
+.deco .ghost{position:absolute;width:clamp(44px,5vw,70px);opacity:.75;animation:drift 7s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(14px,-26px) rotate(5deg)}}
+.spider{position:absolute;right:max(26px,env(safe-area-inset-right,0px));top:0;width:2px;height:24px;background:#2b0a1d;transform-origin:top center;animation:dangle 3.4s ease-in-out infinite;z-index:3;pointer-events:none}
+.spider span{position:absolute;bottom:-26px;left:-17px;width:36px}
+@keyframes dangle{0%,100%{transform:rotate(8deg);height:20px}50%{transform:rotate(-8deg);height:44px}}
+.swarm{position:fixed;width:44px;color:#2b0a1d;pointer-events:none;z-index:50}
+.swarm svg{animation:flap .2s ease-in-out infinite alternate;transform-origin:50% 40%}
+@media (max-width:900px){.spider{display:none}}
+@media (max-width:600px){.overlay{gap:8px;padding:12px}.overlay .ghosts{display:none}.overlay h2{font-size:30px}.big{font-size:18px;padding:10px 22px}.hint{display:none}.overlay p{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.progress i,.toast{transition:none}.progress i,.deco *,.spider,h1 .pk,.overlay .ghosts span{animation:none!important}.deco .bat{display:none}}
 </style>
 </head>
 <body>
+<div class="deco" aria-hidden="true"><div class="spider"><span><svg viewBox="0 0 40 34" xmlns="http://www.w3.org/2000/svg"><g stroke="#2b0a1d" stroke-width="2.2" fill="none" stroke-linecap="round"><path d="M14 14 4 6M14 17 2 16M14 20 4 27M15 23 9 32M26 14l10-8M26 17l12-1M26 20l10 7M25 23l6 9"/></g><ellipse cx="20" cy="19" rx="8" ry="9" fill="#2b0a1d"/><circle cx="20" cy="9" r="5" fill="#2b0a1d"/><circle cx="18" cy="8.5" r="1.4" fill="#fff"/><circle cx="22" cy="8.5" r="1.4" fill="#fff"/><circle cx="18.3" cy="8.8" r=".6" fill="#2b0a1d"/><circle cx="22.3" cy="8.8" r=".6" fill="#2b0a1d"/></svg></span></div><div class="web l"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" stroke-opacity=".8" stroke-width="1.2" fill="none"><path d="M0 0L120 120M0 0L120 60M0 0L60 120M0 0L120 15M0 0L15 120"/><path d="M28 0Q22 10 26 18Q14 18 0 28"/><path d="M58 0Q47 18 52 36Q40 34 32 46Q20 46 0 58"/><path d="M90 0Q74 26 80 54Q60 52 50 70Q36 70 26 82Q12 80 0 90"/><path d="M120 18Q104 50 108 80Q88 78 74 98Q56 98 48 112Q36 110 18 120"/></g></svg></div><div class="web r"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" stroke-opacity=".8" stroke-width="1.2" fill="none"><path d="M0 0L120 120M0 0L120 60M0 0L60 120M0 0L120 15M0 0L15 120"/><path d="M28 0Q22 10 26 18Q14 18 0 28"/><path d="M58 0Q47 18 52 36Q40 34 32 46Q20 46 0 58"/><path d="M90 0Q74 26 80 54Q60 52 50 70Q36 70 26 82Q12 80 0 90"/><path d="M120 18Q104 50 108 80Q88 78 74 98Q56 98 48 112Q36 110 18 120"/></g></svg></div><div class="bat" style="top:9%;animation-duration:19s;animation-delay:0s;width:64px"><svg viewBox="0 0 64 30" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M32 9c1.5-3 3-5 3-5l1.2 4.6c2.6-.8 5.2-.6 7.8.8C48 5.2 55 3 64 4.5c-5.6 2-9 6-10 12.5-3-2.2-6.4-2.2-9 .8-2.2-2.4-5.4-2.6-8 0-1.6-2.2-3.4-3-5-3s-3.4.8-5 3c-2.6-2.6-5.8-2.4-8 0-2.6-3-6-3-9-.8C9 11 5.6 6.5 0 4.5 9 3 16 5.2 20 9.4c2.6-1.4 5.2-1.6 7.8-.8L29 4s1.5 2 3 5z"/><circle cx="29.6" cy="11.5" r="1" fill="#ff7a00"/><circle cx="34.4" cy="11.5" r="1" fill="#ff7a00"/></svg></div><div class="bat" style="top:22%;animation-duration:27s;animation-delay:-9s;width:44px"><svg viewBox="0 0 64 30" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M32 9c1.5-3 3-5 3-5l1.2 4.6c2.6-.8 5.2-.6 7.8.8C48 5.2 55 3 64 4.5c-5.6 2-9 6-10 12.5-3-2.2-6.4-2.2-9 .8-2.2-2.4-5.4-2.6-8 0-1.6-2.2-3.4-3-5-3s-3.4.8-5 3c-2.6-2.6-5.8-2.4-8 0-2.6-3-6-3-9-.8C9 11 5.6 6.5 0 4.5 9 3 16 5.2 20 9.4c2.6-1.4 5.2-1.6 7.8-.8L29 4s1.5 2 3 5z"/><circle cx="29.6" cy="11.5" r="1" fill="#ff7a00"/><circle cx="34.4" cy="11.5" r="1" fill="#ff7a00"/></svg></div><div class="bat" style="top:58%;animation-duration:23s;animation-delay:-16s;width:52px"><svg viewBox="0 0 64 30" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M32 9c1.5-3 3-5 3-5l1.2 4.6c2.6-.8 5.2-.6 7.8.8C48 5.2 55 3 64 4.5c-5.6 2-9 6-10 12.5-3-2.2-6.4-2.2-9 .8-2.2-2.4-5.4-2.6-8 0-1.6-2.2-3.4-3-5-3s-3.4.8-5 3c-2.6-2.6-5.8-2.4-8 0-2.6-3-6-3-9-.8C9 11 5.6 6.5 0 4.5 9 3 16 5.2 20 9.4c2.6-1.4 5.2-1.6 7.8-.8L29 4s1.5 2 3 5z"/><circle cx="29.6" cy="11.5" r="1" fill="#ff7a00"/><circle cx="34.4" cy="11.5" r="1" fill="#ff7a00"/></svg></div><div class="bat" style="top:80%;animation-duration:31s;animation-delay:-4s;width:38px"><svg viewBox="0 0 64 30" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M32 9c1.5-3 3-5 3-5l1.2 4.6c2.6-.8 5.2-.6 7.8.8C48 5.2 55 3 64 4.5c-5.6 2-9 6-10 12.5-3-2.2-6.4-2.2-9 .8-2.2-2.4-5.4-2.6-8 0-1.6-2.2-3.4-3-5-3s-3.4.8-5 3c-2.6-2.6-5.8-2.4-8 0-2.6-3-6-3-9-.8C9 11 5.6 6.5 0 4.5 9 3 16 5.2 20 9.4c2.6-1.4 5.2-1.6 7.8-.8L29 4s1.5 2 3 5z"/><circle cx="29.6" cy="11.5" r="1" fill="#ff7a00"/><circle cx="34.4" cy="11.5" r="1" fill="#ff7a00"/></svg></div><div class="ghost" style="left:1.5%;top:46%;animation-delay:0s"><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></div><div class="ghost" style="right:2%;bottom:6%;animation-delay:-2.5s"><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></div><div class="ghost" style="left:46%;bottom:2%;animation-delay:-4.5s"><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></div></div>
 <div class="wrap">
   <header>
-    <h1>Bashayers Halloween Party <span>Mixer</span></h1>
+    <h1><span class="pk" aria-hidden="true"><svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg"><path d="M22 8c0-4 2-7 6-8l1.5 2.2C27 3.4 25.6 5.6 25.6 8z" fill="#3f7d20"/><ellipse cx="14" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="34" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="24" cy="26" rx="12" ry="17" fill="#ff7a00"/><path d="M12 21l6-6 3 7zM36 21l-6-6-3 7z" fill="#2b0a1d"/><path d="M11 30q13 10 26 0l-3 6-3-3-3 4-4-4-3 4-3-4-3 3z" fill="#2b0a1d"/></svg></span>Bashayers Halloween Party <span>Mixer</span></h1>
     <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen</div>
   </header>
 
@@ -104,9 +135,10 @@ li.on .n{color:var(--accent-deep)}
     <div class="screen" id="screen">
       <div id="player"></div>
       <div class="overlay" id="overlay">
-        <h2 id="ovTitle">Ready when you are</h2>
+        <div class="ghosts" aria-hidden="true"><span><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></span><span><svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg"><path d="M22 8c0-4 2-7 6-8l1.5 2.2C27 3.4 25.6 5.6 25.6 8z" fill="#3f7d20"/><ellipse cx="14" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="34" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="24" cy="26" rx="12" ry="17" fill="#ff7a00"/><path d="M12 21l6-6 3 7zM36 21l-6-6-3 7z" fill="#2b0a1d"/><path d="M11 30q13 10 26 0l-3 6-3-3-3 4-4-4-3 4-3-4-3 3z" fill="#2b0a1d"/></svg></span><span><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></span></div>
+        <h2 id="ovTitle">Ready to get spooky?</h2>
         <p id="ovSub">Loading the YouTube player…</p>
-        <button class="big" id="startBtn" type="button" disabled>Start the show</button>
+        <button class="big" id="startBtn" type="button" disabled>Let the haunting begin</button>
       </div>
     </div>
 
@@ -128,7 +160,7 @@ li.on .n{color:var(--accent-deep)}
   </section>
 
   <aside>
-    <div class="aside-head"><h3>Clips</h3><button class="ctl" id="editBtn" type="button">Edit clips</button></div>
+    <div class="aside-head"><h3>Tonight&#8217;s Frights</h3><button class="ctl" id="editBtn" type="button">Edit clips</button></div>
     <ol class="cues" id="cues"></ol>
     <div class="editor" id="editor" hidden>
       <div class="premium" role="note"><span class="ico">!</span><div><b>Check YouTube Premium to skip ads</b>Make sure this browser is signed in to the YouTube account that has Premium. <a href="https://www.youtube.com" target="_blank" rel="noopener">Open YouTube</a> and check the logo top-left says Premium. Use Chrome, not a private window, and don't block YouTube cookies, or ads may still play here.</div></div>
@@ -298,7 +330,7 @@ function next(auto){
   play(n);
 }
 function prev(){ let p = idx - 1; while(p >= 0 && clips[p].err) p--; play(Math.max(0, p)); }
-function showEnd(){ started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all the clips"; $("ovSub").textContent = "Press the button to run the list again."; $("startBtn").textContent = "Play again"; updateNow(); }
+function showEnd(){ started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all, boos and ghouls!"; $("ovSub").textContent = "Press the button to haunt the list again."; $("startBtn").textContent = "Haunt again"; updateNow(); }
 
 function startPoll(){ stopPoll(); poll = setInterval(tick, 200); }
 function stopPoll(){ clearInterval(poll); poll = null; }
@@ -329,7 +361,19 @@ function updateNow(){
 }
 
 /* ---------- controls ---------- */
-$("startBtn").onclick = () => begin(0);
+function batSwarm(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const r = $("startBtn").getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const svg = document.querySelector(".deco .bat").innerHTML;
+  for(let i=0;i<16;i++){
+    const b = document.createElement("div"); b.className = "swarm"; b.innerHTML = svg;
+    b.style.left = (cx-22)+"px"; b.style.top = (cy-10)+"px"; document.body.appendChild(b);
+    const ang = Math.random()*Math.PI*2, dist = 300 + Math.random()*500, s = .6 + Math.random()*.9;
+    const a = b.animate([{transform:"translate(0,0) scale(.2)",opacity:1},{transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist-150}px) scale(${s})`,opacity:0}],{duration:1300+Math.random()*900,easing:"cubic-bezier(.2,.7,.3,1)"});
+    a.onfinish = () => b.remove();
+  }
+}
+$("startBtn").onclick = () => { batSwarm(); begin(0); };
 $("nextBtn").onclick = () => { if(!started) begin(0); else next(false); };
 $("prevBtn").onclick = () => { if(!started) begin(0); else prev(); };
 $("playBtn").onclick = togglePlay;
@@ -415,9 +459,9 @@ $("saveBtn").onclick = () => {
   clips = out; listText = serialize(out); idx = -1; started = false;
   try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
   if(player && player.stopVideo) player.stopVideo(); stopPoll();
-  $("overlay").hidden = false; $("ovTitle").textContent = "Ready when you are"; $("startBtn").textContent = "Start the show";
+  $("overlay").hidden = false; $("ovTitle").textContent = "Ready to get spooky?"; $("startBtn").textContent = "Let the haunting begin";
   $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`; $("startBtn").disabled = !ready;
-  closeEditor(); renderList(); updateNow(); toast("Clips saved");
+  closeEditor(); renderList(); updateNow(); toast("Clips saved. Boo!");
 };
 
 renderList(); updateNow();
