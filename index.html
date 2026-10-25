@@ -64,7 +64,7 @@ li.on .n{color:var(--accent)}
 .r{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .editor{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--line)}
-.editor{overflow:auto;flex:1;border-top:0}
+.editor{overflow:auto;flex:1;border-top:0;gap:10px}
 .erow{display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
 .erow.bad{border-color:var(--bad)}
 .ehead{display:flex;justify-content:space-between;align-items:center}
@@ -77,6 +77,10 @@ li.on .n{color:var(--accent)}
 .fld input.bad{border-color:var(--bad)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ferr{font-size:12px;color:var(--bad)}
+.premium{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:8px;background:#2c2312;border:1px solid var(--accent);color:var(--fg);font-size:13px;line-height:1.45}
+.premium .ico{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:800 14px/22px var(--display);text-align:center}
+.premium b{display:block;font:800 14px var(--display);margin-bottom:2px}
+.premium a{color:var(--accent)}
 .addBtn{border-style:dashed !important;width:100%}
 .efoot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .msg{font-size:12px;color:var(--muted)}
@@ -124,6 +128,7 @@ li.on .n{color:var(--accent)}
     <div class="aside-head"><h3>Clips</h3><button class="ctl" id="editBtn" type="button">Edit clips</button></div>
     <ol class="cues" id="cues"></ol>
     <div class="editor" id="editor" hidden>
+      <div class="premium" role="note"><span class="ico">!</span><div><b>Check YouTube Premium to skip ads</b>Make sure this browser is signed in to the YouTube account that has Premium. <a href="https://www.youtube.com" target="_blank" rel="noopener">Open YouTube</a> and check the logo top-left says Premium. Use Chrome, not a private window, and don't block YouTube cookies, or ads may still play here.</div></div>
       <div class="msg">Times look like <b>1:23</b> or <b>1:02:03</b>. Leave End empty to play to the end of the video.</div>
       <div id="rows" style="display:flex;flex-direction:column;gap:10px"></div>
       <button class="ctl addBtn" id="addBtn" type="button">+ Add clip</button>
