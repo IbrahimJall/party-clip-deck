@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7n52T4lSyEnzUM467Wx7x4qX4+JCFFsuPcfWKbCoVYU=' 'sha256-Uh026mL6hC6iCLi3FaOq8rttiNIo7i6HdTIbpESWLTo=' 'sha256-7NaEQCh/LLPgq7ppZGTqVzCuYHM6pv4CRfKXOXD+LBU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Fn/3VumZsxhbUIUbUBMVXAKL/epYtUp7YRhqtJ14OZc=' 'sha256-Uh026mL6hC6iCLi3FaOq8rttiNIo7i6HdTIbpESWLTo=' 'sha256-7NaEQCh/LLPgq7ppZGTqVzCuYHM6pv4CRfKXOXD+LBU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bashayers Halloween Party Mixer</title>
@@ -196,7 +196,14 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
 /* ===== Your clips go here. One per line: link  start  end  optional title =====
    Lines starting with # are ignored. Leave end blank (or "end") to play to the end of the video. */
 /* Firebase project settings (public by design; access is enforced by Firestore security rules). */
-window.FIREBASE_CONFIG = null;
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyB5lRwStVAECUunGdzI97g_O9y5Uc199O8",
+  authDomain: "bashayers-party-mixer.firebaseapp.com",
+  projectId: "bashayers-party-mixer",
+  storageBucket: "bashayers-party-mixer.firebasestorage.app",
+  messagingSenderId: "345970608344",
+  appId: "1:345970608344:web:4a27b2e122dfc81cd2afad"
+};
 
 const DEFAULT_LIST = `
 # Example clips. Replace these with yours (or use "Edit clips" on the page).
