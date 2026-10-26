@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0nJR3JQxbCmh+TIIsLWDyjBCyQrMgb+Oh5+uJHigRW0=' 'sha256-93F55bd9My+LrLr7OOX4AEV9PbeKrAXGMoQ8tan/1+I=' https://www.youtube.com https://s.ytimg.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'none'; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7n52T4lSyEnzUM467Wx7x4qX4+JCFFsuPcfWKbCoVYU=' 'sha256-Uh026mL6hC6iCLi3FaOq8rttiNIo7i6HdTIbpESWLTo=' 'sha256-7NaEQCh/LLPgq7ppZGTqVzCuYHM6pv4CRfKXOXD+LBU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bashayers Halloween Party Mixer</title>
@@ -32,7 +32,12 @@ h1{font-family:var(--spooky);font-weight:400;font-size:clamp(30px,4.6vw,58px);li
 h1 .pk{text-shadow:none;width:clamp(38px,5vw,60px);flex:none;animation:wobble 2.6s ease-in-out infinite;transform-origin:50% 90%}
 @keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 h1 span{color:var(--accent);text-shadow:3px 3px 0 #2b0a1d}
-.hint{color:var(--muted);font-size:13px;padding-right:44px}
+.hint{color:var(--muted);font-size:13px}
+.hdr-r{flex:1 1 320px;display:flex;flex-direction:row-reverse;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding-right:44px;min-width:0}
+.acct{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.acct .who{font:600 13px var(--display);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct .who:empty{display:none}
+.syncnote{font-size:12px;color:var(--muted);width:100%}
 kbd{font-family:var(--mono);font-size:12px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--fg)}
 
 .stage{min-width:0;display:flex;flex-direction:column;gap:12px}
@@ -121,7 +126,7 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
 .swarm{position:fixed;width:44px;color:#2b0a1d;pointer-events:none;z-index:50}
 .swarm svg{animation:flap .2s ease-in-out infinite alternate;transform-origin:50% 40%}
 @media (max-width:900px){.spider{display:none}}
-@media (max-width:600px){.overlay{gap:8px;padding:12px}.overlay .ghosts{display:none}.overlay h2{font-size:30px}.big{font-size:18px;padding:10px 22px}.hint{display:none}.overlay p{font-size:13px}}
+@media (max-width:600px){.hdr-r{padding-right:0;justify-content:flex-start}.overlay{gap:8px;padding:12px}.overlay .ghosts{display:none}.overlay h2{font-size:30px}.big{font-size:18px;padding:10px 22px}.hint{display:none}.overlay p{font-size:13px}}
 @media (prefers-reduced-motion:reduce){.progress i,.toast{transition:none}.progress i,.deco *,.spider,h1 .pk,.overlay .ghosts span{animation:none!important}.deco .bat{display:none}}
 </style>
 </head>
@@ -130,7 +135,14 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
 <div class="wrap">
   <header>
     <h1><span class="pk" aria-hidden="true"><svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg"><path d="M22 8c0-4 2-7 6-8l1.5 2.2C27 3.4 25.6 5.6 25.6 8z" fill="#3f7d20"/><ellipse cx="14" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="34" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="24" cy="26" rx="12" ry="17" fill="#ff7a00"/><path d="M12 21l6-6 3 7zM36 21l-6-6-3 7z" fill="#2b0a1d"/><path d="M11 30q13 10 26 0l-3 6-3-3-3 4-4-4-3 4-3-4-3 3z" fill="#2b0a1d"/></svg></span>Bashayers Halloween Party <span>Mixer</span></h1>
-    <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen</div>
+    <div class="hdr-r">
+      <div class="acct" id="acct" hidden>
+        <span class="who" id="acctName"></span>
+        <button class="ctl" id="signInBtn" type="button">Sign in with Google</button>
+        <button class="ctl" id="signOutBtn" type="button" hidden>Sign out</button>
+      </div>
+      <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen</div>
+    </div>
   </header>
 
   <section class="stage">
@@ -174,6 +186,7 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
       <button class="ctl" id="saveBtn" type="button">Save clips</button>
       <button class="ctl" id="cancelBtn" type="button">Cancel</button>
       <span class="msg bad" id="parseMsg"></span>
+      <span class="syncnote" id="syncNote">Saved on this device only.</span>
     </div>
   </aside>
 </div>
@@ -182,6 +195,9 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
 <script>
 /* ===== Your clips go here. One per line: link  start  end  optional title =====
    Lines starting with # are ignored. Leave end blank (or "end") to play to the end of the video. */
+/* Firebase project settings (public by design; access is enforced by Firestore security rules). */
+window.FIREBASE_CONFIG = null;
+
 const DEFAULT_LIST = `
 # Example clips. Replace these with yours (or use "Edit clips" on the page).
 https://www.youtube.com/watch?v=dQw4w9WgXcQ   0:43  1:05   Example clip one
@@ -334,7 +350,7 @@ function next(auto){
   play(n);
 }
 function prev(){ let p = idx - 1; while(p >= 0 && clips[p].err) p--; play(Math.max(0, p)); }
-function showEnd(){ started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all, boos and ghouls!"; $("ovSub").textContent = "Press the button to haunt the list again."; $("startBtn").textContent = "Haunt again"; updateNow(); }
+function showEnd(){ if(pendingList){ const t = pendingList; pendingList = null; started = false; window.applyListText(t); } started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all, boos and ghouls!"; $("ovSub").textContent = "Press the button to haunt the list again."; $("startBtn").textContent = "Haunt again"; updateNow(); }
 
 function startPoll(){ stopPoll(); poll = setInterval(tick, 200); }
 function stopPoll(){ clearInterval(poll); poll = null; }
@@ -465,10 +481,80 @@ $("saveBtn").onclick = () => {
   if(player && player.stopVideo) player.stopVideo(); stopPoll();
   $("overlay").hidden = false; $("ovTitle").textContent = "Ready to get spooky?"; $("startBtn").textContent = "Let the haunting begin";
   $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`; $("startBtn").disabled = !ready;
-  closeEditor(); renderList(); updateNow(); toast("Clips saved. Boo!");
+  closeEditor(); renderList(); updateNow();
+  if(window.cloud && window.cloud.signedIn()){
+    window.cloud.save(listText).then(() => toast("Saved to your Google account. Boo!")).catch(e => toast("Saved on this device, but not to your account: " + e.message));
+  } else toast("Clips saved on this device. Boo!");
 };
 
+/* Called by the Google sign-in module when a saved playlist arrives. */
+let pendingList = null;
+window.applyListText = function(text){
+  const parsed = parseList(text).clips;
+  if(!parsed.length) return false;
+  if(started){ pendingList = text; toast("Your saved playlist will load after this show."); return true; }
+  listText = text; clips = parsed; idx = -1;
+  try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
+  if(!$("editor").hidden) closeEditor();
+  $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`;
+  renderList(); updateNow(); return true;
+};
+window.currentListText = () => listText;
+window.hasOwnLocalList = () => { try{ return !!localStorage.getItem(STORE_KEY); }catch(e){ return false; } };
+window.showToast = t => toast(t);
+
 renderList(); updateNow();
+</script>
+<script type="module">
+/* Google sign-in + saved playlist (Firebase Auth + Firestore Lite). Inactive until FIREBASE_CONFIG is set. */
+const V = "10.12.2", base = `https://www.gstatic.com/firebasejs/${V}/`;
+const $ = id => document.getElementById(id);
+const cfg = window.FIREBASE_CONFIG;
+if(cfg){
+  const [{ initializeApp }, A, F] = await Promise.all([
+    import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore-lite.js")
+  ]);
+  const app = initializeApp(cfg), auth = A.getAuth(app), db = F.getFirestore(app);
+  let user = null;
+  const ref = () => F.doc(db, "playlists", user.uid);
+  const friendly = e => {
+    const c = (e && e.code) || "";
+    if(c.includes("popup-blocked")) return "Your browser blocked the sign-in window. Allow pop-ups for this site and try again.";
+    if(c.includes("popup-closed") || c.includes("cancelled-popup")) return "Sign-in window was closed.";
+    if(c.includes("unauthorized-domain")) return "This site isn't on the Firebase authorized domains list yet.";
+    if(c.includes("permission-denied")) return "The database refused access. Check the Firestore rules.";
+    if(c.includes("network")) return "No internet connection.";
+    return (e && e.message) || "Something went wrong.";
+  };
+  window.cloud = {
+    signedIn: () => !!user,
+    save: async text => {
+      if(!user) throw new Error("not signed in");
+      try{ await F.setDoc(ref(), { list: text, updated: F.serverTimestamp() }); }
+      catch(e){ throw new Error(friendly(e)); }
+    }
+  };
+  $("acct").hidden = false;
+  $("signInBtn").onclick = async () => {
+    try{ await A.signInWithPopup(auth, new A.GoogleAuthProvider()); }
+    catch(e){ window.showToast(friendly(e)); }
+  };
+  $("signOutBtn").onclick = () => A.signOut(auth).then(() => window.showToast("Signed out. Your playlist stays saved in your account."));
+  A.onAuthStateChanged(auth, async u => {
+    user = u;
+    $("signInBtn").hidden = !!u; $("signOutBtn").hidden = !u;
+    $("acctName").textContent = u ? "Signed in: " + (u.displayName || u.email || "you") : "";
+    $("syncNote").textContent = u ? "Saves to your Google account, so this playlist loads on any device you sign in on." : "Saved on this device only. Sign in with Google to keep it everywhere.";
+    if(!u) return;
+    try{
+      const snap = await F.getDoc(ref());
+      const saved = snap.exists() && typeof snap.data().list === "string" ? snap.data().list : null;
+      if(saved){ window.applyListText(saved); window.showToast("Loaded your saved playlist."); }
+      else if(window.hasOwnLocalList()){ await window.cloud.save(window.currentListText()); window.showToast("Your playlist is now saved to your Google account."); }
+      else window.showToast("Signed in. Add your clips and press Save clips to keep them.");
+    }catch(e){ window.showToast("Couldn't load your saved playlist: " + friendly(e)); }
+  });
+}
 </script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
