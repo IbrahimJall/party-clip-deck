@@ -7,7 +7,7 @@ h = p.read_text()
 hashes = " ".join("'sha256-%s'" % base64.b64encode(hashlib.sha256(s.encode()).digest()).decode()
                   for s in re.findall(r"<script(?: type=\"module\")?>(.*?)</script>", h, re.S))
 csp = ("default-src 'none'; "
-       f"script-src {hashes} https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; "
+       f"script-src 'self' {hashes} https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; "
        "style-src 'unsafe-inline' https://fonts.googleapis.com; "
        "font-src https://fonts.gstatic.com; "
        "img-src data: https://i.ytimg.com; "
