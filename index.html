@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-Fn/3VumZsxhbUIUbUBMVXAKL/epYtUp7YRhqtJ14OZc=' 'sha256-YcsS5c+1ni/iN7qBI3NpAHH0UjfNcTiYbjlvSw/1STU=' 'sha256-7NaEQCh/LLPgq7ppZGTqVzCuYHM6pv4CRfKXOXD+LBU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Fn/3VumZsxhbUIUbUBMVXAKL/epYtUp7YRhqtJ14OZc=' 'sha256-xUj+D2zMhjp4wd07GWHTdAd4oD53UGuJraURa2GdCx0=' 'sha256-IP6E1T/LFGShNh4z55IUNhIZuFW0y+8MzhzIoLO1uZU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bashayers Halloween Party Mixer</title>
@@ -60,7 +60,7 @@ kbd{font-family:var(--mono);font-size:12px;background:var(--panel);border:1px so
 .overlay p{margin:0;color:#f3b6d4}
 .big{font-family:var(--spooky);font-weight:400;letter-spacing:.04em;font-size:clamp(20px,2.6vw,28px);box-shadow:0 0 0 4px #2b0a1d,0 0 26px rgba(255,122,0,.7);background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 34px;cursor:pointer}
 .big:hover{filter:brightness(1.08);transform:scale(1.04) rotate(-1deg)}
-.big:disabled{opacity:.6;cursor:wait}
+.big.waiting{opacity:.75;cursor:progress}
 
 .nowbar{display:flex;flex-direction:column;gap:6px}
 .nowtitle{font-family:var(--display);font-weight:800;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -120,23 +120,17 @@ li.on .n{color:transparent;background:url("data:image/svg+xml,%3Csvg%20viewBox%3
 .erow.dragging{box-shadow:0 18px 40px rgba(43,10,29,.35);transform:rotate(-1.2deg);opacity:.96;pointer-events:none}
 body.is-dragging{user-select:none;-webkit-user-select:none;cursor:grabbing}
 .erow-ph{border:2px dashed var(--accent);border-radius:8px;background:rgba(255,122,0,.08)}
-.bpmrow{display:flex;gap:4px;align-items:stretch}
-.bpmrow input{min-width:0;flex:1}
-.mini{flex:none;width:30px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);font:600 12px var(--mono);cursor:pointer;padding:0}
-.mini:hover{border-color:var(--accent)}
 .notes-tg{display:flex;align-items:center;gap:8px;width:100%;background:none;border:1px dashed var(--line);border-radius:6px;padding:7px 10px;color:var(--fg);font:600 13px var(--display);cursor:pointer;text-align:left}
 .notes-tg .lock svg{width:12px;height:14px;display:block}
 .notes-tg .nl{flex:1}
 .notes-tg .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px #2b0a1d}
 .f-notes{width:100%;resize:vertical;min-height:84px;background:var(--field);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:14px/1.45 system-ui,-apple-system,sans-serif}
-.r .bpm{display:inline-block;margin-left:8px;padding:0 6px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:11px}
 .nowrow{display:flex;align-items:center;gap:10px;min-width:0}
 .nowrow .nowtitle{flex:1;min-width:0}
-.bpmnow{flex:none;font:600 12px var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
-.bpmnow .live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e0002a;margin-right:6px;animation:blink 1s steps(2) infinite;vertical-align:0}
-@keyframes blink{50%{opacity:.25}}
-#meterBtn[aria-pressed="true"]{background:#2b0a1d;color:#ffb27a;border-color:#2b0a1d}
 .toggles{display:flex;flex-wrap:wrap;gap:6px 16px;width:100%}
+.taphint{position:absolute;left:12px;right:12px;top:12px;z-index:3;pointer-events:none;background:#2b0a1d;color:#fff3f9;border:2px solid var(--accent);border-radius:10px;padding:10px 14px;font:14px/1.4 system-ui,-apple-system,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.taphint b{color:#ffb27a}
+@media (max-width:600px){.taphint{font-size:12px;padding:8px 10px;left:8px;right:8px;top:8px}}
 .addBtn{border-style:dashed !important;width:100%}
 .efoot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .msg{font-size:12px;color:var(--muted)}
@@ -175,23 +169,24 @@ body.is-dragging{user-select:none;-webkit-user-select:none;cursor:grabbing}
         <button class="ctl" id="signInBtn" type="button">Sign in with Google</button>
         <button class="ctl" id="signOutBtn" type="button" hidden>Sign out</button>
       </div>
-      <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen · <kbd>T</kbd> tap BPM</div>
+      <div class="hint"><kbd>Space</kbd> play/pause · <kbd>N</kbd> next · <kbd>P</kbd> previous · <kbd>F</kbd> fullscreen</div>
     </div>
   </header>
 
   <section class="stage">
     <div class="screen" id="screen">
       <div id="player"></div>
+      <div class="taphint" id="tapHint" role="status" hidden><b>One more tap:</b> press ▶ on the video. Your browser wants the first play to come from YouTube's own button. After that, clips play on their own.</div>
       <div class="overlay" id="overlay">
         <div class="ghosts" aria-hidden="true"><span><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></span><span><svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg"><path d="M22 8c0-4 2-7 6-8l1.5 2.2C27 3.4 25.6 5.6 25.6 8z" fill="#3f7d20"/><ellipse cx="14" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="34" cy="26" rx="12" ry="16" fill="#e8650a"/><ellipse cx="24" cy="26" rx="12" ry="17" fill="#ff7a00"/><path d="M12 21l6-6 3 7zM36 21l-6-6-3 7z" fill="#2b0a1d"/><path d="M11 30q13 10 26 0l-3 6-3-3-3 4-4-4-3 4-3-4-3 3z" fill="#2b0a1d"/></svg></span><span><svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg"><path fill="#fff7fb" stroke="#2b0a1d" stroke-width="1.5" d="M20 2C9.5 2 3 10.5 3 21v26l5.7-4.6L14.3 47 20 42.4 25.7 47l5.6-4.6L37 47V21C37 10.5 30.5 2 20 2z"/><ellipse cx="14.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="25.5" cy="20" rx="2.6" ry="3.6" fill="#2b0a1d"/><ellipse cx="20" cy="29" rx="3" ry="4" fill="#2b0a1d"/><circle cx="10" cy="25" r="2.2" fill="#f9a8d4"/><circle cx="30" cy="25" r="2.2" fill="#f9a8d4"/></svg></span></div>
         <h2 id="ovTitle">Ready to get spooky?</h2>
         <p id="ovSub">Loading the YouTube player…</p>
-        <button class="big" id="startBtn" type="button" disabled>Let the haunting begin</button>
+        <button class="big" id="startBtn" type="button">Let the haunting begin</button>
       </div>
     </div>
 
     <div class="nowbar">
-      <div class="nowrow"><div class="nowtitle" id="nowTitle">Nothing playing</div><div class="bpmnow" id="bpmNow" hidden></div></div>
+      <div class="nowtitle" id="nowTitle">Nothing playing</div>
       <div class="progress"><i id="bar"></i></div>
       <div class="times"><span id="tNow">0:00</span><span id="tClip">Clip 0 of 0</span><span id="tLeft">-0:00</span></div>
     </div>
@@ -201,8 +196,6 @@ body.is-dragging{user-select:none;-webkit-user-select:none;cursor:grabbing}
       <button class="ctl" id="playBtn" type="button">Play / Pause</button>
       <button class="ctl" id="nextBtn" type="button">Next ▶</button>
       <button class="ctl" id="fsBtn" type="button">Fullscreen</button>
-      <button class="ctl" id="meterBtn" type="button" aria-pressed="false" title="Listen to this tab's audio and detect each clip's BPM">Measure BPM</button>
-      <button class="ctl" id="tapBtn" type="button" title="Tap along to the beat (or press T)">Tap BPM</button>
       <div class="toggles">
       <label class="tog"><input type="checkbox" id="fadeChk" checked> Fade in/out</label>
       <label class="tog"><input type="checkbox" id="loopChk"> Loop the list</label>
@@ -287,10 +280,7 @@ function urlStart(url){
   try{ const u = new URL(url.startsWith("http") ? url : "https://" + url);
     const t = u.searchParams.get("t") || u.searchParams.get("start"); return t ? parseTime(t) : null; }catch(e){ return null; }
 }
-const BPM_MIN = 20, BPM_MAX = 300;
-const cleanBpm = v => (typeof v === "number" && isFinite(v) && v >= BPM_MIN && v <= BPM_MAX) ? Math.round(v * 10) / 10 : null;
-const SRC = new Set(["auto", "tap", "manual"]);
-/* Playlist format v2 (JSON): {v:2, clips:[{id,start,end,title,notes,bpmStart,bpmEnd,bpmStartSrc,bpmEndSrc}]} */
+/* Playlist format v2 (JSON): {v:2, clips:[{id,start,end,title,notes}]} */
 function parseJsonList(text){
   let data; try{ data = JSON.parse(text); }catch(e){ return { clips:[], errors:["Saved playlist couldn't be read"] }; }
   const clips = [], errors = [];
@@ -301,8 +291,6 @@ function parseJsonList(text){
     clips.push({ id:c.id, start, end,
       title: typeof c.title === "string" ? c.title.slice(0, 120) : "",
       notes: typeof c.notes === "string" ? c.notes.slice(0, 5000) : "",
-      bpmStart: cleanBpm(c.bpmStart), bpmEnd: cleanBpm(c.bpmEnd),
-      bpmStartSrc: SRC.has(c.bpmStartSrc) ? c.bpmStartSrc : null, bpmEndSrc: SRC.has(c.bpmEndSrc) ? c.bpmEndSrc : null,
       err:false });
   });
   return { clips, errors };
@@ -325,7 +313,7 @@ function parseList(text){
     if(start == null) start = urlStart(tok[0]) || 0;
     if(end != null && end <= start){ errors.push(`Line ${i+1}: end time is before the start time`); return; }
     const title = tok.slice(titleFrom).join(" ") || "";
-    clips.push({id, start, end, title, notes:"", bpmStart:null, bpmEnd:null, bpmStartSrc:null, bpmEndSrc:null, err:false});
+    clips.push({id, start, end, title, notes:"", err:false});
   });
   return {clips, errors};
 }
@@ -348,8 +336,7 @@ function renderList(){
   clips.forEach((c, i) => {
     const li = document.createElement("li");
     li.className = (i === idx ? "on " : "") + (c.err ? "err" : "");
-    const bpm = (c.bpmStart != null || c.bpmEnd != null) ? `<span class="bpm" title="BPM at start → end">${fmtBpm(c.bpmStart)} → ${fmtBpm(c.bpmEnd)} BPM</span>` : "";
-    li.innerHTML = `<span class="n">${String(i+1).padStart(2,"0")}</span><div><div class="t"></div><div class="r">${fmt(c.start)} → ${fmt(c.end)}${bpm}${c.err ? " · can't play here, skipped" : ""}</div></div>`;
+    li.innerHTML = `<span class="n">${String(i+1).padStart(2,"0")}</span><div><div class="t"></div><div class="r">${fmt(c.start)} → ${fmt(c.end)}${c.err ? " · can't play here, skipped" : ""}</div></div>`;
     li.querySelector(".t").textContent = c.title || c.realTitle || ("YouTube " + c.id);
     li.addEventListener("click", () => { if(!started) begin(i); else play(i); });
     ol.appendChild(li);
@@ -364,11 +351,15 @@ window.onYouTubeIframeAPIReady = function(){
     width:"100%", height:"100%",
     playerVars:{ playsinline:1, rel:0, modestbranding:1, origin: location.origin },
     events:{
-      onReady: () => { ready = true; $("ovSub").textContent = clips.length ? `${clips.length} clip${clips.length>1?"s":""} queued.` : "Add clips with “Edit clips”."; $("startBtn").disabled = !clips.length; },
+      onReady: () => {
+        ready = true; ytFailed = false; clearTimeout(ytWatchdog); syncOverlay();
+        if(wantStart){ wantStart = false; $("startBtn").textContent = "Ready! Press to start"; toast("YouTube is ready. Press start."); }
+      },
       onStateChange: e => {
         if(e.data === YT.PlayerState.ENDED) next(true);
         if(e.data === YT.PlayerState.PLAYING){
-          armed = true;
+          armed = true; $("tapHint").hidden = true; clearTimeout(stuckTimer);
+          if(volume === 0 && !$("fadeChk").checked){ volume = 100; player.setVolume(100); }
           const c = clips[idx]; const d = player.getVideoData && player.getVideoData();
           if(c && d && d.title && !c.title && c.realTitle !== d.title){ c.realTitle = d.title; renderList(); }
           updateNow();
@@ -389,8 +380,36 @@ if(location.protocol === "file:"){
   $("ovSub").textContent = "YouTube blocks videos on pages opened as a local file (Error 153). Serve it from your website or a local server, then reload.";
 }
 
+/* ---------- blocked-autoplay rescue ---------- */
+let stuckTimer = 0;
+function watchForBlockedStart(i){
+  clearTimeout(stuckTimer);
+  stuckTimer = setTimeout(() => {
+    if(idx !== i || !started) return;
+    const s = player.getPlayerState();
+    if(s === -1 || s === YT.PlayerState.CUED){ $("tapHint").hidden = false; }
+  }, 2500);
+}
+
+/* ---------- start / overlay state ---------- */
+let wantStart = false, ytFailed = false;
+function syncOverlay(){
+  const btn = $("startBtn");
+  btn.classList.toggle("waiting", !ready);
+  if(location.protocol === "file:"){ $("ovSub").textContent = "Open this page from its web address. YouTube won't play videos on a page opened as a local file."; return; }
+  if(ytFailed){ $("ovSub").textContent = "YouTube's player is taking a long time or was blocked. If you use an ad blocker or a privacy browser, allow youtube.com on this site, then reload. (It will still start if it finishes loading.)"; return; }
+  if(!clips.length){ $("ovSub").textContent = "No clips yet. Press “Edit clips” to add some."; return; }
+  $("ovSub").textContent = ready ? `${clips.length} clip${clips.length>1?"s":""} queued.` : "Loading the YouTube player…";
+}
+const ytWatchdog = setTimeout(() => { if(!ready){ ytFailed = true; syncOverlay(); } }, 12000);
+window.ytScriptFailed = () => { ytFailed = true; syncOverlay(); };
 function begin(i){
-  if(!ready || !clips.length) return;
+  if(!clips.length){ toast("Add some clips first: press “Edit clips”."); openEditor(); return; }
+  if(!ready){
+    if(ytFailed){ wantStart = true; toast("YouTube's player hasn't loaded yet. Allow youtube.com if you use a blocker, or wait a moment."); return; }
+    wantStart = true; toast("Still loading YouTube. Press start again when the button says Ready."); return;
+  }
+  if(!started) clips.forEach(c => c.err = false);
   started = true; $("overlay").hidden = true; play(i || 0);
 }
 function play(i){
@@ -402,6 +421,7 @@ function play(i){
   volume = $("fadeChk").checked ? 0 : 100;
   player.setVolume(volume); player.unMute();
   player.loadVideoById(opts);
+  watchForBlockedStart(i);
   updateVibe(c, c.start, 0);
   const nx = clips[i+1]; if(nx) paletteFor(nx.id);
   renderList(); updateNow();
@@ -446,7 +466,7 @@ function tick(){
   if(c.end != null && t >= c.end - 0.05 && (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING)) next(true);
 }
 function updateNow(){
-  const c = clips[idx]; showBpmNow();
+  const c = clips[idx];
   $("nowTitle").textContent = c ? (c.title || c.realTitle || ("YouTube " + c.id)) : "Nothing playing";
   $("tClip").textContent = `Clip ${idx >= 0 ? idx+1 : 0} of ${clips.length}`;
   if(!c){ $("bar").style.width = "0"; $("tNow").textContent = "0:00"; $("tLeft").textContent = "-0:00"; }
@@ -525,153 +545,6 @@ $("vibeChk").addEventListener("change", () => {
 });
 try{ if(localStorage.getItem("partyClipDeck.vibe") === "0") $("vibeChk").checked = false; }catch(e){}
 
-/* ---------- BPM: automatic measuring (tab audio) and tap tempo ---------- */
-/* Tempo estimate from an onset envelope sampled at fs (Hz). Returns {bpm, confidence} or null. */
-function estimateBpm(env, fs, lo = 60, hi = 190) {
-  const N = env.length;
-  if (N < fs * 4) return null;
-  // 1) remove slow loudness drift (moving average over ~0.4 s), keep positive part
-  const w = Math.max(3, Math.round(fs * 0.4)), x = new Float64Array(N);
-  let s = 0;
-  for (let i = 0; i < N; i++) {
-    s += env[i]; if (i >= w) s -= env[i - w];
-    const m = s / Math.min(i + 1, w);
-    x[i] = Math.max(0, env[i] - m);
-  }
-  let mean = 0; for (let i = 0; i < N; i++) mean += x[i]; mean /= N;
-  for (let i = 0; i < N; i++) x[i] -= mean;
-  // 2) autocorrelation over the lags we care about (and their multiples for the comb)
-  const minL = Math.floor(fs * 60 / hi), maxL = Math.ceil(fs * 60 / lo);
-  const maxNeeded = Math.min(N - 1, maxL * 2 + 2);
-  const ac = new Float64Array(maxNeeded + 1);
-  for (let L = 0; L <= maxNeeded; L++) {
-    let a = 0; for (let i = 0; i + L < N; i++) a += x[i] * x[i + L];
-    ac[L] = a / (N - L);
-  }
-  if (ac[0] <= 0) return null;
-  const acAt = l => { const i = Math.floor(l), f = l - i; return i + 1 <= maxNeeded ? ac[i] * (1 - f) + ac[i + 1] * f : 0; };
-  // 3) comb score: a true beat period also lines up at 2x, 3x, 4x the period; mild prior near 120 BPM
-  const score = new Float64Array(maxL + 2);
-  let best = -Infinity, bestL = minL;
-  for (let L = minL; L <= maxL; L++) {
-    let sc = 0;
-    for (let k = 1; k <= 2; k++) { const l = L * k; if (l <= maxNeeded) sc += acAt(l) / k; }
-    const bpm = 60 * fs / L, oct = Math.log2(bpm / 115);
-    sc *= Math.exp(-0.5 * (oct / 0.6) ** 2);   // settings tuned on test drum loops (see README)
-    score[L] = sc;
-    if (sc > best) { best = sc; bestL = L; }
-  }
-  // 4) refine the peak with a parabola for sub-sample accuracy
-  let L = bestL;
-  if (bestL > minL && bestL < maxL) {
-    const a = score[bestL - 1], b = score[bestL], c = score[bestL + 1], den = a - 2 * b + c;
-    if (den < 0) L = bestL + 0.5 * (a - c) / den;
-  }
-  const confidence = Math.max(0, Math.min(1, acAt(L) / ac[0]));
-  return { bpm: 60 * fs / L, confidence };
-}
-
-function setClipBpm(i, which, value, src){
-  const c = clips[i]; if(!c || value == null) return false;
-  const key = which === "start" ? "bpmStart" : "bpmEnd", skey = key + "Src";
-  if(src === "auto" && c[key] != null && c[skey] !== "auto") return false;   // never overwrite your own numbers
-  c[key] = Math.round(value * 10) / 10; c[skey] = src;
-  persist(true); renderList(); showBpmNow(); return true;
-}
-function showBpmNow(extra){
-  const c = clips[idx], el = $("bpmNow");
-  const parts = [];
-  if(meter) parts.push(`<span class="live" aria-hidden="true"></span>${meter.collecting ? "listening" : "ready"}`);
-  if(c && (c.bpmStart != null || c.bpmEnd != null)) parts.push(`${fmtBpm(c.bpmStart)} → ${fmtBpm(c.bpmEnd)} BPM`);
-  if(extra) parts.push(extra);
-  el.hidden = !parts.length; el.innerHTML = parts.join(" · ");
-}
-let meter = null;
-const WIN_PAD = 2.0;                                   // skip the 1.5 s fade at each end of a clip
-function bpmWindows(c, clipEnd){
-  const len = clipEnd - c.start - 2 * WIN_PAD; if(len < 8) return null;
-  const W = Math.min(10, len / 2);
-  return { start:[c.start + WIN_PAD, c.start + WIN_PAD + W], end:[clipEnd - WIN_PAD - W, clipEnd - WIN_PAD] };
-}
-function finishWindow(col){
-  if(!col || col.env.length < col.fs * 4) return;
-  const r = estimateBpm(col.env, col.fs); if(!r) return;
-  if(setClipBpm(col.i, col.which, r.bpm, "auto")) showBpmNow(`measured ${Math.round(r.bpm)} at ${col.which}`);
-}
-function onEnvelope({ fs, values }){
-  if(!meter) return;
-  const playing = started && idx >= 0 && player && player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING;
-  const c = clips[idx];
-  let col = meter.collecting;
-  if(!playing || !c){ if(col && col.i !== idx){ finishWindow(col); meter.collecting = null; } return; }
-  const t = player.getCurrentTime(), dur = player.getDuration(), clipEnd = c.end != null ? c.end : dur;
-  const w = clipEnd ? bpmWindows(c, clipEnd) : null;
-  if(col && (col.i !== idx || t > col.until + 0.5 || t < col.from - 0.5)){ finishWindow(col); meter.collecting = col = null; showBpmNow(); }
-  if(!w) return;
-  const which = t >= w.start[0] && t <= w.start[1] ? "start" : t >= w.end[0] && t <= w.end[1] ? "end" : null;
-  if(!which){ return; }
-  if(!col){ col = meter.collecting = { i:idx, which, from:w[which][0], until:w[which][1], fs, env:[] }; showBpmNow(); }
-  for(const v of values) col.env.push(v);
-}
-async function connectMeter(ctx, sourceNode, stream){
-  await ctx.audioWorklet.addModule("bpm-worklet.js");
-  const node = new AudioWorkletNode(ctx, "onset-envelope"), sink = ctx.createGain(); sink.gain.value = 0;
-  sourceNode.connect(node); node.connect(sink); sink.connect(ctx.destination);   // silent sink keeps the worklet running
-  node.port.onmessage = e => onEnvelope(e.data);
-  meter = { ctx, node, stream, collecting:null };
-  $("meterBtn").setAttribute("aria-pressed", "true"); $("meterBtn").textContent = "Stop measuring";
-  showBpmNow();
-}
-function stopMeter(){
-  if(!meter) return;
-  finishWindow(meter.collecting);
-  try{ meter.stream && meter.stream.getTracks().forEach(t => t.stop()); }catch(e){}
-  try{ meter.ctx.close(); }catch(e){}
-  meter = null; $("meterBtn").setAttribute("aria-pressed", "false"); $("meterBtn").textContent = "Measure BPM"; showBpmNow();
-}
-$("meterBtn").onclick = async () => {
-  if(meter){ stopMeter(); return; }
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia || !window.AudioWorkletNode){
-    toast("This browser can't share tab audio. Use Tap BPM instead."); return;
-  }
-  const ctx = new AudioContext();
-  let stream;
-  try{
-    stream = await navigator.mediaDevices.getDisplayMedia({ video:true,
-      audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false, suppressLocalAudioPlayback:false },
-      preferCurrentTab:true, selfBrowserSurface:"include", surfaceSwitching:"exclude", systemAudio:"exclude" });
-  }catch(e){ ctx.close(); toast("Measuring cancelled. Choose this tab and turn on “Also share tab audio”."); return; }
-  const audio = stream.getAudioTracks();
-  if(!audio.length){ stream.getTracks().forEach(t => t.stop()); ctx.close(); toast("No sound was shared. Pick this tab and turn on “Also share tab audio”."); return; }
-  stream.getTracks().forEach(t => t.addEventListener("ended", stopMeter));
-  try{ await connectMeter(ctx, ctx.createMediaStreamSource(new MediaStream(audio)), stream); toast("Listening. Each clip's BPM is measured at its start and end."); }
-  catch(e){ stream.getTracks().forEach(t => t.stop()); ctx.close(); toast("Couldn't start measuring: " + e.message); }
-};
-
-/* Tap tempo: tap the button (or press T) on the beat; it saves to the start or end of the playing clip. */
-const taps = [];
-function tap(){
-  const now = performance.now();
-  if(taps.length && now - taps[taps.length - 1] > 2000) taps.length = 0;
-  taps.push(now); if(taps.length > 12) taps.shift();
-  const ds = taps.slice(1).map((t, i) => t - taps[i]).sort((a, b) => a - b);
-  const bpm = ds.length ? 60000 / ds[Math.floor(ds.length / 2)] : null;
-  $("tapBtn").textContent = bpm ? `Tap · ${Math.round(bpm)}` : "Tap…";
-  clearTimeout(tap._t);
-  tap._t = setTimeout(() => {
-    $("tapBtn").textContent = "Tap BPM";
-    if(taps.length < 4 || !bpm){ taps.length = 0; return; }
-    taps.length = 0;
-    const c = clips[idx];
-    if(!started || !c){ toast(`About ${Math.round(bpm)} BPM. Tap while a clip plays to save it.`); return; }
-    const t = player.getCurrentTime(), clipEnd = c.end != null ? c.end : player.getDuration();
-    const which = (t - c.start) < (clipEnd - c.start) / 2 ? "start" : "end";
-    setClipBpm(idx, which, bpm, "tap");
-    toast(`Saved ${Math.round(bpm)} BPM as the ${which} of clip ${idx + 1}`);
-  }, 2200);
-}
-$("tapBtn").onclick = tap;
-
 /* ---------- controls ---------- */
 function batSwarm(){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -686,40 +559,39 @@ function batSwarm(){
   }
 }
 $("startBtn").onclick = () => { batSwarm(); begin(0); };
+/* After a mouse/touch click, drop focus from the control so Space/N/P/F act on the player, not the button. */
+document.querySelector(".controls").addEventListener("click", e => { const b = e.target.closest("button"); if(b && e.detail > 0) b.blur(); });
 $("nextBtn").onclick = () => { if(!started) begin(0); else next(false); };
 $("prevBtn").onclick = () => { if(!started) begin(0); else prev(); };
 $("playBtn").onclick = togglePlay;
 function togglePlay(){
   if(!started){ begin(0); return; }
   const st = player.getPlayerState();
-  if(st === YT.PlayerState.PLAYING) player.pauseVideo(); else player.playVideo();
+  if(st === YT.PlayerState.PLAYING) player.pauseVideo();
+  else { player.playVideo(); watchForBlockedStart(idx); }
 }
 $("fsBtn").onclick = toggleFs;
 function toggleFs(){
   const el = $("screen");
   try{
-    if(document.fullscreenElement) document.exitFullscreen();
+    if(document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
     else { const r = (el.requestFullscreen || el.webkitRequestFullscreen).call(el); if(r && r.catch) r.catch(() => toast("Fullscreen isn't available here")); }
   }catch(e){ toast("Fullscreen isn't available here"); }
 }
 document.addEventListener("keydown", e => {
-  if(e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") return;
+  if(e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+  if(e.target.closest && e.target.closest("button, a") && (e.key === "Enter" || (e.key === " " && !e.target.closest(".controls")))) return;
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
   const k = e.key.toLowerCase();
   if(k === " "){ e.preventDefault(); togglePlay(); }
   else if(k === "n"){ $("nextBtn").click(); }
   else if(k === "p"){ $("prevBtn").click(); }
   else if(k === "f"){ toggleFs(); }
-  else if(k === "t"){ tap(); }
 });
 
 /* ---------- editor: one card per clip ---------- */
-function bpmField(cls, label, val){
-  return `<div class="fld bpmf"><span>${label}</span><div class="bpmrow"><input class="${cls}" inputmode="decimal" placeholder="–" autocomplete="off" value="${val != null ? Math.round(val*10)/10 : ""}">
-    <button type="button" class="mini" data-k="0.5" aria-label="Halve ${label}" title="Halve (if it was detected at double speed)">½</button><button type="button" class="mini" data-k="2" aria-label="Double ${label}" title="Double (if it was detected at half speed)">×2</button></div></div>`;
-}
 function rowEl(c){
   const d = document.createElement("div"); d.className = "erow";
-  d._orig = { bpmStart:c.bpmStart ?? null, bpmEnd:c.bpmEnd ?? null, bpmStartSrc:c.bpmStartSrc || null, bpmEndSrc:c.bpmEndSrc || null };
   d.innerHTML = `<div class="ehead"><button class="grip" type="button" aria-label="Move clip: drag, or use the up and down arrow keys" title="Drag to reorder"><svg viewBox="0 0 12 18" aria-hidden="true"><g fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="3" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="3" cy="15" r="1.6"/><circle cx="9" cy="15" r="1.6"/></g></svg></button><span class="num"></span><span class="spacer"></span><button class="del" type="button">Remove</button></div>
     <label class="fld"><span>Name</span><input class="f-name" maxlength="120" autocomplete="off"></label>
     <label class="fld"><span>YouTube link</span><input class="f-link" type="url" inputmode="url" placeholder="https://youtu.be/…" autocomplete="off" spellcheck="false"></label>
@@ -727,7 +599,6 @@ function rowEl(c){
       <label class="fld"><span>Start</span><input class="f-start" inputmode="numeric" placeholder="0:00" autocomplete="off"></label>
       <label class="fld"><span>End</span><input class="f-end" inputmode="numeric" placeholder="end of video" autocomplete="off"></label>
     </div>
-    <div class="two">${bpmField("f-bpms", "BPM at start", c.bpmStart)}${bpmField("f-bpme", "BPM at end", c.bpmEnd)}</div>
     <button class="notes-tg" type="button" aria-expanded="false"><span class="lock" aria-hidden="true"><svg viewBox="0 0 12 14"><path fill="currentColor" d="M3 6V4a3 3 0 0 1 6 0v2h.5A1.5 1.5 0 0 1 11 7.5v5A1.5 1.5 0 0 1 9.5 14h-7A1.5 1.5 0 0 1 1 12.5v-5A1.5 1.5 0 0 1 2.5 6H3zm1.5 0h3V4a1.5 1.5 0 0 0-3 0v2z"/></svg></span><span class="nl">Private notes</span><span class="dot" hidden></span><span class="chev" aria-hidden="true">▸</span></button>
     <textarea class="f-notes" maxlength="5000" rows="4" placeholder="Only you see these. They never show on the party screen." hidden></textarea>
     <div class="ferr"></div>`;
@@ -745,10 +616,6 @@ function rowEl(c){
     q(".notes-tg").setAttribute("aria-expanded", String(open)); q(".chev").textContent = open ? "▾" : "▸";
     if(open) q(".f-notes").focus();
   };
-  d.querySelectorAll(".mini").forEach(b => b.onclick = () => {
-    const inp = b.parentElement.querySelector("input"), v = parseFloat(inp.value);
-    if(isFinite(v)) inp.value = Math.round(v * parseFloat(b.dataset.k) * 10) / 10;
-  });
   q(".del").onclick = () => { d.remove(); numberRows(); };
   // If a pasted link already contains a start time (?t=90), fill Start for them.
   q(".f-link").addEventListener("input", e => {
@@ -814,14 +681,14 @@ function openEditor(){
   numberRows(); $("parseMsg").textContent = "";
   $("cues").hidden = true; $("editor").hidden = false; $("efoot").hidden = false;
 }
-function closeEditor(){ $("cues").hidden = false; $("editor").hidden = true; $("efoot").hidden = true; }
+function closeEditor(){ $("cues").hidden = false; $("editor").hidden = true; $("efoot").hidden = true;
+  if(pendingList && !started){ const t = pendingList; pendingList = null; window.applyListText(t); } }
 function readRows(){
   const out = [], bad = [];
   [...$("rows").children].forEach((r, i) => {
     const L = r.querySelector(".f-link"), S = r.querySelector(".f-start"), E = r.querySelector(".f-end"), err = r.querySelector(".ferr");
     [L,S,E].forEach(x => x.classList.remove("bad")); r.classList.remove("bad"); err.textContent = "";
-    const N = r.querySelector(".f-name"), BS = r.querySelector(".f-bpms"), BE = r.querySelector(".f-bpme"), NO = r.querySelector(".f-notes");
-    [BS,BE].forEach(x => x.classList.remove("bad"));
+    const N = r.querySelector(".f-name"), NO = r.querySelector(".f-notes");
     const link = L.value.trim(), st = S.value.trim(), en = E.value.trim();
     if(!link && !st && !en && !N.value.trim() && !NO.value.trim()) return;   // fully empty card: ignore
     const msgs = [];
@@ -831,18 +698,8 @@ function readRows(){
     let end = en ? parseTime(en) : null;
     if(Number.isNaN(end)){ E.classList.add("bad"); msgs.push("End should look like 2:05"); }
     else if(end != null && !Number.isNaN(start) && end <= start){ E.classList.add("bad"); msgs.push("End must be after Start"); }
-    const bpmOf = (inp, label) => {
-      const s = inp.value.trim(); if(!s) return null;
-      const v = parseFloat(s);
-      if(!isFinite(v) || v < BPM_MIN || v > BPM_MAX){ inp.classList.add("bad"); msgs.push(`${label} should be between ${BPM_MIN} and ${BPM_MAX}`); return null; }
-      return Math.round(v*10)/10;
-    };
-    const bpmStart = bpmOf(BS, "BPM at start"), bpmEnd = bpmOf(BE, "BPM at end");
     if(msgs.length){ r.classList.add("bad"); err.textContent = msgs.join(" · "); bad.push(i+1); return; }
-    const o = r._orig || {};
-    const srcOf = (v, ov, os) => v == null ? null : (v === ov ? os : "manual");
-    out.push({ id, start, end, title: N.value.trim().slice(0,120), notes: NO.value.slice(0,5000),
-      bpmStart, bpmEnd, bpmStartSrc: srcOf(bpmStart, o.bpmStart, o.bpmStartSrc), bpmEndSrc: srcOf(bpmEnd, o.bpmEnd, o.bpmEndSrc), err:false });
+    out.push({ id, start, end, title: N.value.trim().slice(0,120), notes: NO.value.slice(0,5000), err:false });
   });
   return { out, bad };
 }
@@ -851,20 +708,8 @@ function serialize(list){
     const o = { id:c.id, start:c.start, end:c.end };
     if(c.title) o.title = c.title;
     if(c.notes) o.notes = c.notes;
-    if(c.bpmStart != null){ o.bpmStart = c.bpmStart; if(c.bpmStartSrc) o.bpmStartSrc = c.bpmStartSrc; }
-    if(c.bpmEnd != null){ o.bpmEnd = c.bpmEnd; if(c.bpmEndSrc) o.bpmEndSrc = c.bpmEndSrc; }
     return o;
   }) });
-}
-const fmtBpm = v => v == null ? "–" : String(Math.round(v));
-/* Save the current clip list locally and (if signed in) to the account, a moment after the last change. */
-function persist(quiet){
-  listText = serialize(clips);
-  try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
-  clearTimeout(persist._t);
-  persist._t = setTimeout(() => {
-    if(window.cloud && window.cloud.signedIn()) window.cloud.save(listText).catch(e => { if(!quiet) toast("Not saved to your account: " + e.message); });
-  }, 1500);
 }
 
 $("editBtn").onclick = () => { if($("editor").hidden) openEditor(); else closeEditor(); };
@@ -874,12 +719,12 @@ $("saveBtn").onclick = () => {
   const { out, bad } = readRows();
   if(bad.length){ $("parseMsg").textContent = `Check clip ${bad.join(", ")}`; return; }
   if(!out.length){ $("parseMsg").textContent = "Add at least one clip"; return; }
-  clips = out; listText = serialize(out); idx = -1; started = false;
-  try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
+  clips = out; listText = serialize(out); idx = -1; started = false; pendingList = null;
+  try{ localStorage.setItem(STORE_KEY, listText); localStorage.setItem(STORE_KEY + ".at", String(Date.now())); }catch(e){}
   if(window.onClipsChanged) window.onClipsChanged();
   if(player && player.stopVideo) player.stopVideo(); stopPoll();
   $("overlay").hidden = false; $("ovTitle").textContent = "Ready to get spooky?"; $("startBtn").textContent = "Let the haunting begin";
-  $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`; $("startBtn").disabled = !ready;
+  syncOverlay();
   closeEditor(); renderList(); updateNow();
   if(window.cloud && window.cloud.signedIn()){
     window.cloud.save(listText).then(() => toast("Saved to your Google account. Boo!")).catch(e => toast("Saved on this device, but not to your account: " + e.message));
@@ -892,17 +737,24 @@ window.applyListText = function(text){
   const parsed = parseList(text).clips;
   if(!parsed.length) return false;
   if(started){ pendingList = text; toast("Your saved playlist will load after this show."); return true; }
+  if(!$("editor").hidden){ pendingList = text; toast("Your saved playlist will load when you close the editor."); return true; }
+  pendingList = null;
   listText = text; clips = parsed; idx = -1;
-  try{ localStorage.setItem(STORE_KEY, listText); }catch(e){}
+  try{ localStorage.setItem(STORE_KEY, listText); localStorage.setItem(STORE_KEY + ".at", String(Date.now())); }catch(e){}
   if(!$("editor").hidden) closeEditor();
-  $("ovSub").textContent = `${clips.length} clip${clips.length>1?"s":""} queued.`;
+  syncOverlay();
   renderList(); updateNow(); return true;
 };
 window.currentListText = () => listText;
+window.localSavedAt = () => { try{ return +localStorage.getItem(STORE_KEY + ".at") || 0; }catch(e){ return 0; } };
+window.markLocalSaved = () => { try{ localStorage.setItem(STORE_KEY + ".at", String(Date.now())); }catch(e){} };
 window.hasOwnLocalList = () => { try{ return !!localStorage.getItem(STORE_KEY); }catch(e){ return false; } };
 window.showToast = t => toast(t);
 
-renderList(); updateNow();
+renderList(); updateNow(); syncOverlay();
+/* Load YouTube's player script last, and notice if a blocker stops it. */
+(() => { const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; s.async = true;
+  s.onerror = () => window.ytScriptFailed(); document.head.appendChild(s); })();
 </script>
 <script type="module">
 /* Google sign-in + saved playlist (Firebase Auth + Firestore Lite). Inactive until FIREBASE_CONFIG is set. */
@@ -929,7 +781,7 @@ if(cfg){
     signedIn: () => !!user,
     save: async text => {
       if(!user) throw new Error("not signed in");
-      try{ await F.setDoc(ref(), { list: text, updated: F.serverTimestamp() }); }
+      try{ await F.setDoc(ref(), { list: text, updated: F.serverTimestamp() }); window.markLocalSaved(); }
       catch(e){ throw new Error(friendly(e)); }
     }
   };
@@ -948,13 +800,18 @@ if(cfg){
     try{
       const snap = await F.getDoc(ref());
       const saved = snap.exists() && typeof snap.data().list === "string" ? snap.data().list : null;
-      if(saved){ window.applyListText(saved); window.showToast("Loaded your saved playlist."); }
+      const cloudAt = snap.exists() && snap.data().updated && snap.data().updated.toMillis ? snap.data().updated.toMillis() : 0;
+      const local = window.currentListText();
+      if(saved && saved === local){ /* already in sync */ }
+      else if(saved && window.hasOwnLocalList() && window.localSavedAt() > cloudAt){
+        await window.cloud.save(local); window.showToast("Your newer playlist on this device is now saved to your account.");
+      }
+      else if(saved){ if(window.applyListText(saved)) window.showToast("Loaded your saved playlist."); }
       else if(window.hasOwnLocalList()){ await window.cloud.save(window.currentListText()); window.showToast("Your playlist is now saved to your Google account."); }
       else window.showToast("Signed in. Add your clips and press Save clips to keep them.");
     }catch(e){ window.showToast("Couldn't load your saved playlist: " + friendly(e)); }
   });
 }
 </script>
-<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
