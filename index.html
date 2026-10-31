@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Fn/3VumZsxhbUIUbUBMVXAKL/epYtUp7YRhqtJ14OZc=' 'sha256-xUj+D2zMhjp4wd07GWHTdAd4oD53UGuJraURa2GdCx0=' 'sha256-IP6E1T/LFGShNh4z55IUNhIZuFW0y+8MzhzIoLO1uZU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Fn/3VumZsxhbUIUbUBMVXAKL/epYtUp7YRhqtJ14OZc=' 'sha256-9Qq3tlvOY8HejMO4SskaDTImoetJ5NnKGWjuMXMy0tA=' 'sha256-IP6E1T/LFGShNh4z55IUNhIZuFW0y+8MzhzIoLO1uZU=' https://www.youtube.com https://s.ytimg.com https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: https://i.ytimg.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://apis.google.com; media-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bashayers Halloween Party Mixer</title>
@@ -380,6 +380,21 @@ if(location.protocol === "file:"){
   $("ovSub").textContent = "YouTube blocks videos on pages opened as a local file (Error 153). Serve it from your website or a local server, then reload.";
 }
 
+/* ---------- keep the screen awake during the show ----------
+   Phones (iPhone especially) pause web pages when the screen locks, which stops the music.
+   Safari on iPhone and Chrome support the Screen Wake Lock API, so we ask the phone to stay on while clips play. */
+let wakeLock = null, wakeTold = false;
+async function keepAwake(){
+  if(wakeLock || !("wakeLock" in navigator)) return;
+  try{
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+    if(!wakeTold){ wakeTold = true; toast("Your screen will stay on while the show plays."); }
+  }catch(e){ /* not allowed right now (e.g. low-power mode); try again on the next press */ }
+}
+function letSleep(){ if(wakeLock){ wakeLock.release().catch(() => {}); wakeLock = null; } }
+document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible" && started) keepAwake(); });
+
 /* ---------- blocked-autoplay rescue ---------- */
 let stuckTimer = 0;
 function watchForBlockedStart(i){
@@ -409,6 +424,7 @@ function begin(i){
     if(ytFailed){ wantStart = true; toast("YouTube's player hasn't loaded yet. Allow youtube.com if you use a blocker, or wait a moment."); return; }
     wantStart = true; toast("Still loading YouTube. Press start again when the button says Ready."); return;
   }
+  keepAwake();
   if(!started) clips.forEach(c => c.err = false);
   started = true; $("overlay").hidden = true; play(i || 0);
 }
@@ -440,7 +456,7 @@ function next(auto){
   play(n);
 }
 function prev(){ let p = idx - 1; while(p >= 0 && clips[p].err) p--; play(Math.max(0, p)); }
-function showEnd(){ applyTheme(null, ""); if(pendingList){ const t = pendingList; pendingList = null; started = false; window.applyListText(t); } started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all, boos and ghouls!"; $("ovSub").textContent = "Press the button to haunt the list again."; $("startBtn").textContent = "Haunt again"; updateNow(); }
+function showEnd(){ applyTheme(null, ""); letSleep(); if(pendingList){ const t = pendingList; pendingList = null; started = false; window.applyListText(t); } started = false; idx = -1; renderList(); $("overlay").hidden = false; $("ovTitle").textContent = "That's all, boos and ghouls!"; $("ovSub").textContent = "Press the button to haunt the list again."; $("startBtn").textContent = "Haunt again"; updateNow(); }
 
 function startPoll(){ stopPoll(); poll = setInterval(tick, 200); }
 function stopPoll(){ clearInterval(poll); poll = null; }
